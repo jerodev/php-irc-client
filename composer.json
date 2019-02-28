@@ -1,0 +1,21 @@
+{
+    "name": "jerodev/php-irc-client",
+    "description": "php irc client based on react",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Jerodev\\PhpIrcClient\\": "src/"
+        }
+    }
+    "require": {
+        "react/socket": "dev-master"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jeroen Deviaene",
+            "email": "jeroen@deviaene.eu"
+        }
+    ],
+    "minimum-stability": "dev"
+}
