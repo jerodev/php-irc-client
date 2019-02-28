@@ -6,6 +6,7 @@ use Exception;
 use Jerodev\PhpIrcClient\Helpers\EventHandlerCollection;
 use Jerodev\PhpIrcClient\Messages\IrcMessage;
 use Jerodev\PhpIrcClient\Messages\NameReplyMessage;
+use Jerodev\PhpIrcClient\Messages\TopicChangeMessage;
 use React\EventLoop\LoopInterface;
 use React\Socket\ConnectionInterface;
 
@@ -195,12 +196,22 @@ class IrcClient
             case IrcCommand::RPL_WELCOME:
                 $this->sendCommand('JOIN #pokedextest');
                 $this->sendMessage('#pokedextest', 'A wild IrcBot appeared!');
+                $this->sendCommand('TOPIC #pokedextest');
+                break;
+
+            case 'TOPIC':
+            case IrcCommand::RPL_TOPIC:
+                if ($message instanceof TopicChangeMessage) {
+                    $this->getChannel($message->channel)->setTopic($message->topic);
+                } else {
+                    $this->getChannel($message->commandsuffix)->setTopic($message->payload);
+                }
+                var_dump($this->channels);
                 break;
 
             case IrcCommand::RPL_NAMREPLY:
                 if ($message instanceof NameReplyMessage) {
                     $this->getChannel($message->channel)->setUsers($message->names);
-                    var_dump($this->channels);
                 }
                 break;
         }

@@ -4,6 +4,7 @@ namespace Jerodev\PhpIrcClient;
 
 use Jerodev\PhpIrcClient\Messages\IrcMessage;
 use Jerodev\PhpIrcClient\Messages\NameReplyMessage;
+use Jerodev\PhpIrcClient\Messages\TopicChangeMessage;
 
 class IrcMessageParser
 {
@@ -34,6 +35,10 @@ class IrcMessageParser
     {
         $command = preg_replace('/^(?::[^\s]+\s+)?([^\s]+).*?$/', '$1', $message);
         switch ($command) {
+            case IrcCommand::RPL_TOPIC:
+                $msg = new TopicChangeMessage($message);
+                break;
+
             case IrcCommand::RPL_NAMREPLY:
                 $msg = new NameReplyMessage($message);
                 break;
