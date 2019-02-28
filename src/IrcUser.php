@@ -5,10 +5,10 @@ namespace Jerodev\PhpIrcClient;
 class IrcUser
 {
     /** @var string */
-    public $username;
+    public $nickname;
 
-    public function __construct(string $username)
+    public function __construct(string $nickname)
     {
-        $this->username = $username;
+        $this->nickname = $nickname;
     }
 }

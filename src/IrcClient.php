@@ -2,19 +2,23 @@
 
 namespace Jerodev\PhpIrcClient;
 
+use Exception;
 use Jerodev\PhpIrcClient\Helpers\EventHandlerCollection;
+use Jerodev\PhpIrcClient\Messages\IrcMessage;
+use Jerodev\PhpIrcClient\Messages\NameReplyMessage;
 use React\EventLoop\LoopInterface;
 use React\Socket\ConnectionInterface;
 
 class IrcClient
 {
-    const RPL_WELCOME = '001';
-
     /** @var IrcChannel[] */
     private $channels;
 
     /** @var ConnectionInterface */
     private $connection;
+
+    /** @var IrcMessageParser */
+    private $ircMessageParser;
 
     /**
      * Used to track if the username has been sent to the server.
@@ -47,6 +51,7 @@ class IrcClient
         $this->server = $server;
         $this->user = $username === null ? null : new IrcUser($username);
         $this->channels = [];
+        $this->ircMessageParser = new IrcMessageParser();
 
         if (!empty($channels)) {
             if (is_string($channels)) {
@@ -54,16 +59,41 @@ class IrcClient
             }
 
             foreach ($channels as $channel) {
-                $this->channels[] = new IrcChannel($channel);
+                $this->channels[$channel] = new IrcChannel($channel);
             }
         }
     }
 
     /**
+     *  Set the user credentials for the connections.
+     *  When a connection is already open, this function can be used to change the nickname of the client.
+     *
+     *  @param IrcUser|string $user The user information.
+     */
+    public function setNick($user): void
+    {
+        if (is_string($user)) {
+            $user = new IrcUser($user);
+        }
+
+        if ($this->isConnected() && $this->user->nickname !== $user->nickname) {
+            $this->sendCommand("NICK :$user->nickname");
+        }
+
+        $this->user = $user;
+    }
+
+    /**
      *  Connect to the irc server and start listening for messages.
+     *
+     *  @throws Exception if no user information is provided before connecting.
      */
     public function connect(): void
     {
+        if (!$this->user) {
+            throw new Exception("A nickname must be set before connecting to an irc server.");
+        }
+
         if ($this->isConnected()) {
             return;
         }
@@ -80,7 +110,7 @@ class IrcClient
             $this->connection = $connection;
 
             $this->connection->on('data', function ($data) {
-                foreach ($this->parseMessages($data) as $msg) {
+                foreach ($this->ircMessageParser->parse($data) as $msg) {
                     $this->handleIrcMessage($msg);
                 }
             });
@@ -155,39 +185,47 @@ class IrcClient
      */
     private function handleIrcMessage(IrcMessage $message): void
     {
-        //var_dump($message);
+        var_dump($message);
 
         switch ($message->command) {
             case 'PING':
                 $this->sendCommand("PONG :$message->payload");
                 break;
 
-            case self::RPL_WELCOME:
+            case IrcCommand::RPL_WELCOME:
                 $this->sendCommand('JOIN #pokedextest');
                 $this->sendMessage('#pokedextest', 'A wild IrcBot appeared!');
+                break;
+
+            case IrcCommand::RPL_NAMREPLY:
+                if ($message instanceof NameReplyMessage) {
+                    $this->getChannel($message->channel)->setUsers($message->names);
+                    var_dump($this->channels);
+                }
                 break;
         }
 
         if (!$this->isAuthenticated && $this->user) {
-            $this->sendCommand("USER {$this->user->username} * * :{$this->user->username}");
-            $this->sendCommand("NICK {$this->user->username}");
+            $this->sendCommand("USER {$this->user->nickname} * * :{$this->user->nickname}");
+            $this->sendCommand("NICK {$this->user->nickname}");
             $this->isAuthenticated = true;
         }
     }
 
     /**
-     *  Parse one or more incomming irc messages.
+     *  Grab channel information by its name.
+     *  This function makes sure the channel exists on this client first.
      *
-     *  @param string $message The raw message contents.
+     *  @param string $name The name of this channel.
      *
-     *  @return IrcMessage[] An array of parsed messages.
+     *  @return IrcChannel
      */
-    private function parseMessages(string $message)
+    private function getChannel(string $name): IrcChannel
     {
-        if ($messages = preg_split('/\r?\n\r?/', $message, -1, PREG_SPLIT_NO_EMPTY)) {
-            foreach ($messages as $msg) {
-                yield new IrcMessage($msg);
-            }
+        if (($this->channels[$name] ?? null) === null) {
+            $this->channels[$name] = new IrcChannel($name);
         }
+
+        return $this->channels[$name];
     }
 }

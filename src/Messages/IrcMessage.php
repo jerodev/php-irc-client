@@ -1,6 +1,6 @@
 <?php
 
-namespace Jerodev\PhpIrcClient;
+namespace Jerodev\PhpIrcClient\Messages;
 
 class IrcMessage
 {

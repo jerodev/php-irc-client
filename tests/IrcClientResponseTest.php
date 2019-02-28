@@ -3,7 +3,7 @@
 namespace Tests;
 
 use Jerodev\PhpIrcClient\IrcClient;
-use Jerodev\PhpIrcClient\IrcMessage;
+use Jerodev\PhpIrcClient\Messages\IrcMessage;
 
 class IrcClientResponseTest extends TestCase
 {
