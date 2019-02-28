@@ -8,7 +8,7 @@ use Jerodev\PhpIrcClient\Messages\NameReplyMessage;
 class IrcMessageParser
 {
     /**
-     *  Parse one ore more irc messages
+     *  Parse one ore more irc messages.
      *
      *  @param string $message A string received from the irc server
      *
@@ -24,7 +24,7 @@ class IrcMessageParser
     }
 
     /**
-     *  Parse a single message to a corresponding object
+     *  Parse a single message to a corresponding object.
      *
      *  @param string $message
      *
@@ -33,8 +33,7 @@ class IrcMessageParser
     private function parseSingle(string $message): IrcMessage
     {
         $command = preg_replace('/^(?::[^\s]+\s+)?([^\s]+).*?$/', '$1', $message);
-        switch ($command)
-        {
+        switch ($command) {
             case IrcCommand::RPL_NAMREPLY:
                 $msg = new NameReplyMessage($message);
                 break;

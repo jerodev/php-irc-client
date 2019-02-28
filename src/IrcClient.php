@@ -91,7 +91,7 @@ class IrcClient
     public function connect(): void
     {
         if (!$this->user) {
-            throw new Exception("A nickname must be set before connecting to an irc server.");
+            throw new Exception('A nickname must be set before connecting to an irc server.');
         }
 
         if ($this->isConnected()) {
