@@ -6,23 +6,23 @@ class IrcMessage
 {
     /** @var string */
     private $rawMessage;
-    
+
     /** @var string */
     public $command;
-    
+
     /** @var string */
     public $commandsuffix;
-    
+
     /** @var string */
     public $payload;
-    
+
     /** @var string */
     public $source;
-    
-    function __construct(string $message)
+
+    public function __construct(string $message)
     {
         $this->rawMessage = $message;
-        
+
         if (preg_match('/^(?::(?<source>[^\s]+)\s*)?(?<command>[^\s]+)\s*(?<commandsuffix>[^:$]+)?\s*(?::(?<payload>.*?))?$/', $message, $matches)) {
             $this->source = $matches['source'] ?? null;
             $this->command = $matches['command'] ?? null;
@@ -30,9 +30,9 @@ class IrcMessage
             $this->payload = $matches['payload'] ?? null;
         }
     }
-    
+
     /**
-     *  Get the raw message line
+     *  Get the raw message line.
      *
      *  @return string
      */

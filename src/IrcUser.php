@@ -2,12 +2,12 @@
 
 namespace Jerodev\PhpIrcClient;
 
-class IrcUser 
+class IrcUser
 {
     /** @var string */
     public $username;
-    
-    function __construct(string $username)
+
+    public function __construct(string $username)
     {
         $this->username = $username;
     }

@@ -6,12 +6,12 @@ class EventHandlerCollection
 {
     /** @var callable[][] */
     private $eventHandlers;
-    
-    function __construct()
+
+    public function __construct()
     {
         $this->eventHandlers = [];
     }
-    
+
     /**
      *  Register an event handler.
      *
@@ -24,14 +24,14 @@ class EventHandlerCollection
             $function = $event;
             $event = '*';
         }
-        
+
         if (!array_key_exists($event, $this->eventHandlers)) {
             $this->eventHandlers[$event] = [];
         }
-        
+
         $this->eventHandlers[$event][] = $function;
     }
-    
+
     /**
      *  Invoke all handlers for a specific event.
      *

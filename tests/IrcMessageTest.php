@@ -7,10 +7,10 @@ use PHPUnit\Framework\TestCase;
 
 class IrcMessageTest extends TestCase
 {
-    function testParseUserMessage()
+    public function testParseUserMessage()
     {
         $msg = new IrcMessage(':Jerodev!~Jerodev@foo.bar.be PRIVMSG #channel :Hello World!');
-        
+
         $this->assertEquals('Jerodev!~Jerodev@foo.bar.be', $msg->source);
         $this->assertEquals('PRIVMSG', $msg->command);
         $this->assertEquals('#channel', $msg->commandsuffix);
