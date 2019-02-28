@@ -164,7 +164,7 @@ class IrcClient
 
             case self::RPL_WELCOME:
                 $this->sendCommand('JOIN #pokedextest');
-                $this->sendMessage('#pokedextest', "A wild IrcBot appeared!");
+                $this->sendMessage('#pokedextest', 'A wild IrcBot appeared!');
                 break;
         }
 
@@ -179,7 +179,7 @@ class IrcClient
      *  Parse one or more incomming irc messages.
      *
      *  @param string $message The raw message contents.
-     *  .
+     *
      *  @return IrcMessage[] An array of parsed messages.
      */
     private function parseMessages(string $message)
