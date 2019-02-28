@@ -19,6 +19,7 @@ class IrcClient
     function __construct(string $server, $channels = null)
     {
         $this->server = $server;
+        $this->channels = [];
         
         if (!empty($channels)) {
             if (is_string($channels)) {
@@ -26,7 +27,7 @@ class IrcClient
             }
             
             foreach ($channels as $channel) {
-                $this->channels = new IrcChannel($channel);
+                $this->channels[] = new IrcChannel($channel);
             }
         }
     }
