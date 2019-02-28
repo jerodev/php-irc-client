@@ -11,23 +11,33 @@ class IrcMessage
     public $command;
     
     /** @var string */
-    public $source;
+    public $commandsuffix;
     
     /** @var string */
     public $payload;
     
     /** @var string */
-    public $server;
+    public $source;
     
     function __construct(string $message)
     {
         $this->rawMessage = $message;
         
-        if (preg_match('/^(?:(?<server>:[^\s]+)\s*)?(?<command>[^\s]+) (?<source>[^\s]+) (?<payload>.*?)$/', $message, $matches)) {
-            $this->server = $matches['server'] ?? null;
-            $this->command = $matches['command'] ?? null;
+        if (preg_match('/^(?::(?<source>[^\s]+)\s*)?(?<command>[^\s]+)\s*(?<commandsuffix>[^:$]+)?\s*(?::(?<payload>.*?))?$/', $message, $matches)) {
             $this->source = $matches['source'] ?? null;
+            $this->command = $matches['command'] ?? null;
+            $this->commandsuffix = trim($matches['commandsuffix'] ?? null);
             $this->payload = $matches['payload'] ?? null;
         }
+    }
+    
+    /**
+     *  Get the raw message line
+     *
+     *  @return string
+     */
+    public function getRaw(): string
+    {
+        return $this->rawMessage;
     }
 }

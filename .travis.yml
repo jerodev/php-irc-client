@@ -12,4 +12,4 @@ before_script:
   - travis_retry composer update --no-interaction --prefer-dist
 
 script:
-  - vendor/bin/phpstan analyse src --level=5
+  - composer phpstan
