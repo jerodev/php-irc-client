@@ -179,7 +179,6 @@ class IrcClient
      *  Parse one or more incomming irc messages.
      *
      *  @param string $message The raw message contents.
-     *  .
      *
      *  @return IrcMessage[] An array of parsed messages.
      */
