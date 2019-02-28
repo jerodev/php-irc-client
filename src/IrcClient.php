@@ -8,6 +8,8 @@ use React\Socket\ConnectionInterface;
 
 class IrcClient
 {
+    const RPL_WELCOME = '001';
+    
     /** @var IrcChannel[] */
     private $channels;
     
@@ -15,7 +17,7 @@ class IrcClient
     private $connection;
     
     /** 
-     * Used to track if the username has been sent to the server
+     * Used to track if the username has been sent to the server.
      * 
      * @var bool 
      */
@@ -30,7 +32,7 @@ class IrcClient
     /** @var string */
     private $server;
     
-    /** @var IrcUser */
+    /** @var IrcUser|null */
     private $user;
     
     /**
@@ -58,10 +60,14 @@ class IrcClient
     }
     
     /**
-     *  Connect to the irc server and start listening for messages
+     *  Connect to the irc server and start listening for messages.
      */
     public function connect(): void
     {
+        if ($this->isConnected()) {
+            return;
+        }
+        
         $this->isAuthenticated = false;
         
         $this->loop = \React\EventLoop\Factory::create();
@@ -108,7 +114,7 @@ class IrcClient
      *  Register an event handler for irc messages.
      *
      *  @param callable|string $event The name of the event to listen for. Pass a callable to this parameter to catch all events.
-     *  @param callable|null $function The callable that will be invoked on event
+     *  @param callable|null $function The callable that will be invoked on event.
      */
     public function onMessage($event, ?callable $function = null)
     {
@@ -116,9 +122,9 @@ class IrcClient
     }
     
     /** 
-     *  Send a raw command string to the irc server
+     *  Send a raw command string to the irc server.
      *
-     *  @param string $command The full command string to send
+     *  @param string $command The full command string to send.
      */
     public function sendCommand(string $command): void
     {
@@ -134,8 +140,8 @@ class IrcClient
      *  Send a message to a channel or user.
      *  To send to a channel, make sure the `$target` starts with a `#`.
      *
-     *  @param string $target The channel or user to message
-     *  @param string $message The message to send
+     *  @param string $target The channel or user to message.
+     *  @param string $message The message to send.
      */
     public function sendMessage(string $target, string $message): void
     {
@@ -143,13 +149,13 @@ class IrcClient
     }
     
     /**
-     *  Take actions required for received irc messages and invoke the correct event handlers
+     *  Take actions required for received irc messages and invoke the correct event handlers.
      *
-     *  @param IrcMessage $message The message object for the received line
+     *  @param IrcMessage $message The message object for the received line.
      */
     private function handleIrcMessage(IrcMessage $message): void
     {
-        var_dump($message);
+        //var_dump($message);
         
         switch ($message->command)
         {
@@ -157,15 +163,15 @@ class IrcClient
                 $this->sendCommand("PONG :$message->payload");    
                 break;
                 
-            case '001': // RPL_WELCOME
+            case self::RPL_WELCOME:
                 $this->sendCommand('JOIN #pokedextest');
-                $this->sendMessage('#pokedextest', 'A wild Pokedex appeared!');
+                $this->sendMessage('#pokedextest', "A wild IrcBot appeared!");
                 break;
         }
         
-        if (!$this->isAuthenticated) {
-            $this->sendCommand('USER Pokedex * * :Pokedex');
-            $this->sendCommand('NICK Pokedex');
+        if (!$this->isAuthenticated && $this->user) {
+            $this->sendCommand("USER {$this->user->username} * * :{$this->user->username}");
+            $this->sendCommand("NICK {$this->user->username}");
             $this->isAuthenticated = true;
         }
     }
@@ -179,9 +185,10 @@ class IrcClient
      */
     private function parseMessages(string $message)
     {
-        $messages = preg_split('/\r?\n\r?/', $message, -1, PREG_SPLIT_NO_EMPTY);
-        foreach ($messages as $msg) {
-            yield new IrcMessage($msg);
+        if ($messages = preg_split('/\r?\n\r?/', $message, -1, PREG_SPLIT_NO_EMPTY)) {
+            foreach ($messages as $msg) {
+                yield new IrcMessage($msg);
+            }
         }
     }
 }

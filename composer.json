@@ -9,19 +9,23 @@
             "email": "jeroen@deviaene.eu"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
-            "Jerodev\\PhpIrcClient\\": "src/"
+            "Jerodev\\PhpIrcClient\\": "src/",
+            "Tests\\": "tests/"
         }
     },
     "scripts": {
-        "phpstan": "vendor/bin/phpstan analyse src --level=5"  
+        "phpstan": "vendor/bin/phpstan analyse src tests --level=5",
+        "test": "vendor/bin/phpunit"
     },
     "require": {
         "react/socket": "dev-master"
     },
     "require-dev": {
-        "phpstan/phpstan": "^0.11.2"
+        "phpstan/phpstan": "^0.11.2",
+        "phpunit/phpunit": "^8.0",
+        "phpstan/phpstan-phpunit": "^0.11.0"
     }
 }
