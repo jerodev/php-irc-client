@@ -178,6 +178,23 @@ class IrcClient
     {
         $this->sendCommand("PRIVMSG $target :$message");
     }
+    
+    /**
+     *  Grab channel information by its name.
+     *  This function makes sure the channel exists on this client first.
+     *
+     *  @param string $name The name of this channel.
+     *
+     *  @return IrcChannel
+     */
+    public function getChannel(string $name): IrcChannel
+    {
+        if (($this->channels[$name] ?? null) === null) {
+            $this->channels[$name] = new IrcChannel($name);
+        }
+
+        return $this->channels[$name];
+    }
 
     /**
      *  Take actions required for received irc messages and invoke the correct event handlers.
@@ -188,55 +205,17 @@ class IrcClient
     {
         var_dump($message);
 
-        switch ($message->command) {
-            case 'PING':
-                $this->sendCommand("PONG :$message->payload");
-                break;
-
-            case IrcCommand::RPL_WELCOME:
-                $this->sendCommand('JOIN #pokedextest');
-                $this->sendMessage('#pokedextest', 'A wild IrcBot appeared!');
-                $this->sendCommand('TOPIC #pokedextest');
-                break;
-
-            case 'TOPIC':
-            case IrcCommand::RPL_TOPIC:
-                if ($message instanceof TopicChangeMessage) {
-                    $this->getChannel($message->channel)->setTopic($message->topic);
-                } else {
-                    $this->getChannel($message->commandsuffix)->setTopic($message->payload);
-                }
-                var_dump($this->channels);
-                break;
-
-            case IrcCommand::RPL_NAMREPLY:
-                if ($message instanceof NameReplyMessage) {
-                    $this->getChannel($message->channel)->setUsers($message->names);
-                }
-                break;
-        }
-
         if (!$this->isAuthenticated && $this->user) {
             $this->sendCommand("USER {$this->user->nickname} * * :{$this->user->nickname}");
             $this->sendCommand("NICK {$this->user->nickname}");
             $this->isAuthenticated = true;
         }
+        
+        $message->handle($this);
     }
-
-    /**
-     *  Grab channel information by its name.
-     *  This function makes sure the channel exists on this client first.
-     *
-     *  @param string $name The name of this channel.
-     *
-     *  @return IrcChannel
-     */
-    private function getChannel(string $name): IrcChannel
+    
+    private function handlePrivMsg(IrcMessage $message): void
     {
-        if (($this->channels[$name] ?? null) === null) {
-            $this->channels[$name] = new IrcChannel($name);
-        }
-
-        return $this->channels[$name];
+        // TODO
     }
 }

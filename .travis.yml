@@ -13,4 +13,4 @@ before_script:
 
 script:
   - composer phpstan
-  - vendor/bin/phpunit
+  - composer test

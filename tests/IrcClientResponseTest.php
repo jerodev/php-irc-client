@@ -3,7 +3,7 @@
 namespace Tests;
 
 use Jerodev\PhpIrcClient\IrcClient;
-use Jerodev\PhpIrcClient\Messages\IrcMessage;
+use Jerodev\PhpIrcClient\IrcMessageParser;
 
 class IrcClientResponseTest extends TestCase
 {
@@ -20,8 +20,9 @@ class IrcClientResponseTest extends TestCase
             ->method('sendCommand')
             ->with('PONG :0123456');
 
-        $msg = new IrcMessage('PING :0123456');
-        $this->callPrivate($client, 'handleIrcMessage', [$msg]);
+        foreach ((new IrcMessageParser())->parse('PING :0123456') as $msg) {
+            $this->callPrivate($client, 'handleIrcMessage', [$msg]);
+        }
     }
 
     /**
