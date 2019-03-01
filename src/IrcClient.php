@@ -5,8 +5,6 @@ namespace Jerodev\PhpIrcClient;
 use Exception;
 use Jerodev\PhpIrcClient\Helpers\EventHandlerCollection;
 use Jerodev\PhpIrcClient\Messages\IrcMessage;
-use Jerodev\PhpIrcClient\Messages\NameReplyMessage;
-use Jerodev\PhpIrcClient\Messages\TopicChangeMessage;
 use React\EventLoop\LoopInterface;
 use React\Socket\ConnectionInterface;
 
@@ -72,7 +70,7 @@ class IrcClient
      *
      *  @param IrcUser|string $user The user information.
      */
-    public function setNick($user): void
+    public function setUser($user): void
     {
         if (is_string($user)) {
             $user = new IrcUser($user);
@@ -197,6 +195,16 @@ class IrcClient
         }
 
         return $this->channels[$name];
+    }
+    
+    /**
+     *  Return a list of all channels
+     *
+     *  @return IrcChannel[]
+     */
+    public function getChannels(): array
+    {
+        return $this->channels;
     }
 
     /**

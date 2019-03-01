@@ -15,10 +15,23 @@ class IrcChannel
 
     public function __construct(string $name)
     {
+        if ($name[0] !== '#') {
+            $name = "#$name";
+        }
         $this->name = $name;
         $this->users = [];
     }
 
+    /** 
+     *  Fetch the name of the channel, including the `#`
+     *
+     *  @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+    
     /**
      *  Get the current channel topic.
      *
