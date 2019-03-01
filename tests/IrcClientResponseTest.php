@@ -13,7 +13,7 @@ class IrcClientResponseTest extends TestCase
     public function testPingPong()
     {
         $client = $this->getMockBuilder(IrcClient::class)
-            ->disableOriginalConstructor()
+            ->setConstructorArgs([''])
             ->setMethods(['sendCommand'])
             ->getMock();
         $client->expects($this->once())

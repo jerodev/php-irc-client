@@ -38,7 +38,7 @@ class EventHandlerCollection
      *  @param string $event The event to invoke handlers for.
      *  @param array $arguments An array of arguments to be sent to the event handler.
      */
-    public function emitEvent(string $event, array $arguments = []): void
+    public function invoke(string $event, array $arguments = []): void
     {
         $handlers = array_merge($this->eventHandlers['*'] ?? [], $this->eventHandlers[$event] ?? []);
         foreach ($handlers as $handler) {

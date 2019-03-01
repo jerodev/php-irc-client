@@ -15,7 +15,7 @@ class IrcClient
     /** @var IrcChannel[] */
     private $channels;
 
-    /** @var ConnectionInterface */
+    /** @var ConnectionInterface|null */
     private $connection;
 
     /** @var IrcMessageParser */
@@ -53,6 +53,7 @@ class IrcClient
         $this->user = $username === null ? null : new IrcUser($username);
         $this->channels = [];
         $this->ircMessageParser = new IrcMessageParser();
+        $this->messageEventHandlers = new EventHandlerCollection();
 
         if (!empty($channels)) {
             if (is_string($channels)) {
@@ -128,6 +129,8 @@ class IrcClient
         if ($this->isConnected()) {
             $this->connection->close();
             $this->loop->stop();
+            
+            $this->connection = null;
         }
     }
 
@@ -147,7 +150,7 @@ class IrcClient
      *  @param callable|string $event The name of the event to listen for. Pass a callable to this parameter to catch all events.
      *  @param callable|null $function The callable that will be invoked on event.
      */
-    public function onMessage($event, ?callable $function = null)
+    public function addMessageHandler($event, ?callable $function = null)
     {
         $this->messageEventHandlers->addHandler($event, $function);
     }
@@ -203,7 +206,7 @@ class IrcClient
      */
     private function handleIrcMessage(IrcMessage $message): void
     {
-        var_dump($message);
+        $message->handle($this);
 
         if (!$this->isAuthenticated && $this->user) {
             $this->sendCommand("USER {$this->user->nickname} * * :{$this->user->nickname}");
@@ -211,11 +214,6 @@ class IrcClient
             $this->isAuthenticated = true;
         }
         
-        $message->handle($this);
-    }
-    
-    private function handlePrivMsg(IrcMessage $message): void
-    {
-        // TODO
+        $this->messageEventHandlers->invoke($message->command, [$message]);
     }
 }

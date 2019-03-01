@@ -4,6 +4,7 @@ namespace Tests;
 
 use Jerodev\PhpIrcClient\Messages\IrcMessage;
 use Jerodev\PhpIrcClient\Messages\NameReplyMessage;
+use Jerodev\PhpIrcClient\Messages\PrivmsgMessage;
 use Jerodev\PhpIrcClient\Messages\TopicChangeMessage;
 use PHPUnit\Framework\TestCase;
 
@@ -43,11 +44,14 @@ class IrcMessageTest extends TestCase
 
     public function testParseUserMessage()
     {
-        $msg = new IrcMessage(':Jerodev!~Jerodev@foo.bar.be PRIVMSG #channel :Hello World!');
+        $msg = new PrivmsgMessage(':Jerodev!~Jerodev@foo.bar.be PRIVMSG #channel :Hello World!');
 
         $this->assertEquals('Jerodev!~Jerodev@foo.bar.be', $msg->source);
+        $this->assertEquals('Jerodev', $msg->user);
         $this->assertEquals('PRIVMSG', $msg->command);
+        $this->assertEquals('#channel', $msg->target);
         $this->assertEquals('#channel', $msg->commandsuffix);
+        $this->assertEquals('Hello World!', $msg->message);
         $this->assertEquals('Hello World!', $msg->payload);
     }
 }
