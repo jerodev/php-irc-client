@@ -129,6 +129,7 @@ class IrcClient
     {
         $channel = $this->channelName($channel);
         $this->send("JOIN $channel");
+        $this->getChannel($channel);
     }
 
     /**

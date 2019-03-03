@@ -8,6 +8,26 @@ use Jerodev\PhpIrcClient\IrcMessageParser;
 class IrcClientResponseTest extends TestCase
 {
     /**
+     *  Test generating join/part commands.
+     */
+    public function testJoinPartChannel()
+    {
+        $client = $this->getMockBuilder(IrcClient::class)
+            ->setConstructorArgs([''])
+            ->setMethods(['send'])
+            ->getMock();
+        $client->expects($this->exactly(2))
+            ->method('send')
+            ->withConsecutive(
+                ['JOIN #php-irc-client-test'],
+                ['PART #php-irc-client-test']
+            );
+
+        $client->join('#php-irc-client-test');
+        $client->part('#php-irc-client-test');
+    }
+
+    /**
      *  Make sure the client returns a PING request with an equal PONG response.
      */
     public function testPingPong()
