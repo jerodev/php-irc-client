@@ -5,35 +5,20 @@ namespace Jerodev\PhpIrcClient;
 use Exception;
 use Jerodev\PhpIrcClient\Helpers\EventHandlerCollection;
 use Jerodev\PhpIrcClient\Messages\IrcMessage;
-use React\EventLoop\LoopInterface;
-use React\Socket\ConnectionInterface;
 
 class IrcClient
 {
     /** @var IrcChannel[] */
     private $channels;
-
-    /** @var ConnectionInterface|null */
+    
+    /** @var IrcConnection */
     private $connection;
 
-    /** @var IrcMessageParser */
-    private $ircMessageParser;
-
-    /**
-     * Used to track if the username has been sent to the server.
-     *
-     * @var bool
-     */
+    /** @var bool */
     private $isAuthenticated;
-
-    /** @var LoopInterface */
-    private $loop;
 
     /** @var EventHandlerCollection */
     private $messageEventHandlers;
-
-    /** @var string */
-    private $server;
 
     /** @var IrcUser|null */
     private $user;
@@ -47,10 +32,10 @@ class IrcClient
      */
     public function __construct(string $server, $username = null, $channels = null)
     {
-        $this->server = $server;
+        $this->connection = new IrcConnection($server);
+        
         $this->user = $username === null ? null : new IrcUser($username);
         $this->channels = [];
-        $this->ircMessageParser = new IrcMessageParser();
         $this->messageEventHandlers = new EventHandlerCollection();
 
         if (!empty($channels)) {
@@ -76,7 +61,7 @@ class IrcClient
             $user = new IrcUser($user);
         }
 
-        if ($this->isConnected() && $this->user->nickname !== $user->nickname) {
+        if ($this->connection->isConnected() && $this->user->nickname !== $user->nickname) {
             $this->sendCommand("NICK :$user->nickname");
         }
 
@@ -94,29 +79,15 @@ class IrcClient
             throw new Exception('A nickname must be set before connecting to an irc server.');
         }
 
-        if ($this->isConnected()) {
+        if ($this->connection->isConnected()) {
             return;
         }
 
         $this->isAuthenticated = false;
-
-        $this->loop = \React\EventLoop\Factory::create();
-        $tcpConnector = new \React\Socket\TcpConnector($this->loop);
-        $dnsResolverFactory = new \React\Dns\Resolver\Factory();
-        $dns = $dnsResolverFactory->createCached('1.1.1.1', $this->loop);
-        $dnsConnector = new \React\Socket\DnsConnector($tcpConnector, $dns);
-
-        $dnsConnector->connect($this->server)->then(function (ConnectionInterface $connection) {
-            $this->connection = $connection;
-
-            $this->connection->on('data', function ($data) {
-                foreach ($this->ircMessageParser->parse($data) as $msg) {
-                    $this->handleIrcMessage($msg);
-                }
-            });
+        $this->connection->onData(function ($msg) {
+            $this->handleIrcMessage($msg);
         });
-
-        $this->loop->run();
+        $this->connection->open();
     }
 
     /**
@@ -124,33 +95,7 @@ class IrcClient
      */
     public function disconnect(): void
     {
-        if ($this->isConnected()) {
-            $this->connection->close();
-            $this->loop->stop();
-            
-            $this->connection = null;
-        }
-    }
-
-    /**
-     *  Test wether a connection is currently open for this client.
-     *
-     *  @return bool
-     */
-    public function isConnected(): bool
-    {
-        return $this->connection !== null;
-    }
-
-    /**
-     *  Register an event handler for irc messages.
-     *
-     *  @param callable|string $event The name of the event to listen for. Pass a callable to this parameter to catch all events.
-     *  @param callable|null $function The callable that will be invoked on event.
-     */
-    public function addMessageHandler($event, ?callable $function = null)
-    {
-        $this->messageEventHandlers->addHandler($event, $function);
+        $this->connection->close();
     }
 
     /**
@@ -160,11 +105,6 @@ class IrcClient
      */
     public function sendCommand(string $command): void
     {
-        // Make sure the command ends in a newline character
-        if (substr($command, -1) !== "\n") {
-            $command .= "\n";
-        }
-
         $this->connection->write($command);
     }
 
@@ -222,6 +162,6 @@ class IrcClient
             $this->isAuthenticated = true;
         }
         
-        $this->messageEventHandlers->invoke($message->command, [$message]);
+        //$this->messageEventHandlers->invoke($message->command, [$message]);
     }
 }

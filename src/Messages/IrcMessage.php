@@ -10,19 +10,19 @@ class IrcMessage
     private $rawMessage;
 
     /** @var string */
-    public $command;
+    protected $command;
 
     /** @var string */
-    public $commandsuffix;
+    protected $commandsuffix;
     
     /** @var bool */
     protected $handled;
 
     /** @var string */
-    public $payload;
+    protected $payload;
 
     /** @var string */
-    public $source;
+    protected $source;
 
     public function __construct(string $message)
     {
@@ -35,16 +35,6 @@ class IrcMessage
             $this->commandsuffix = trim($matches['commandsuffix'] ?? null);
             $this->payload = $matches['payload'] ?? null;
         }
-    }
-
-    /**
-     *  Get the raw message line.
-     *
-     *  @return string
-     */
-    public function getRaw(): string
-    {
-        return $this->rawMessage;
     }
     
     /**

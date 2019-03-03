@@ -16,15 +16,18 @@ class TestCase extends PHPUnitTestCase
         return $method->invokeArgs($object, $args);
     }
 
-    protected function setPrivateProperty($object, string $property, $value = null): void
+    protected function setPrivate($object, string $property, $value = null): void
     {
         $reflector = new ReflectionClass(get_class($object));
         $reflector->getProperty($property)->setValue($object, $value);
     }
 
-    protected function getPrivateProperty($object, string $property)
+    protected function getPrivate($object, string $property)
     {
         $reflector = new ReflectionClass(get_class($object));
-        $reflector->getProperty($property)->getValue($object);
+        $property = $reflector->getProperty($property);
+        $property->setAccessible(true);
+            
+        return $property->getValue($object);
     }
 }

@@ -6,7 +6,6 @@ use Jerodev\PhpIrcClient\Messages\IrcMessage;
 use Jerodev\PhpIrcClient\Messages\NameReplyMessage;
 use Jerodev\PhpIrcClient\Messages\PrivmsgMessage;
 use Jerodev\PhpIrcClient\Messages\TopicChangeMessage;
-use PHPUnit\Framework\TestCase;
 
 class IrcMessageTest extends TestCase
 {
@@ -14,10 +13,10 @@ class IrcMessageTest extends TestCase
     {
         $msg = new NameReplyMessage(':Jerodev!~Jerodev@foo.bar.be 353 IrcBot = #channel :IrcBot @Q OtherUser');
 
-        $this->assertEquals('Jerodev!~Jerodev@foo.bar.be', $msg->source);
-        $this->assertEquals('353', $msg->command);
-        $this->assertEquals('IrcBot = #channel', $msg->commandsuffix);
-        $this->assertEquals('IrcBot @Q OtherUser', $msg->payload);
+        $this->assertEquals('Jerodev!~Jerodev@foo.bar.be', $this->getPrivate($msg, 'source'));
+        $this->assertEquals('353', $this->getPrivate($msg, 'command'));
+        $this->assertEquals('IrcBot = #channel', $this->getPrivate($msg, 'commandsuffix'));
+        $this->assertEquals('IrcBot @Q OtherUser', $this->getPrivate($msg, 'payload'));
         $this->assertEquals('#channel', $msg->channel);
         $this->assertEquals(['IrcBot', '@Q', 'OtherUser'], $msg->names);
     }
@@ -26,18 +25,18 @@ class IrcMessageTest extends TestCase
     {
         $msg = new IrcMessage(':Jerodev!~Jerodev@foo.bar.be TOPIC #channel :The newest channel topic!');
 
-        $this->assertEquals('Jerodev!~Jerodev@foo.bar.be', $msg->source);
-        $this->assertEquals('TOPIC', $msg->command);
-        $this->assertEquals('#channel', $msg->commandsuffix);
-        $this->assertEquals('The newest channel topic!', $msg->payload);
+        $this->assertEquals('Jerodev!~Jerodev@foo.bar.be', $this->getPrivate($msg, 'source'));
+        $this->assertEquals('TOPIC', $this->getPrivate($msg, 'command'));
+        $this->assertEquals('#channel', $this->getPrivate($msg, 'commandsuffix'));
+        $this->assertEquals('The newest channel topic!', $this->getPrivate($msg, 'payload'));
     }
 
     public function testParseTopicReplyNumeric()
     {
         $msg = new TopicChangeMessage(':Jerodev!~Jerodev@foo.bar.be 332 BotName #channel :The newest channel topic!!');
 
-        $this->assertEquals('Jerodev!~Jerodev@foo.bar.be', $msg->source);
-        $this->assertEquals('332', $msg->command);
+        $this->assertEquals('Jerodev!~Jerodev@foo.bar.be', $this->getPrivate($msg, 'source'));
+        $this->assertEquals('332', $this->getPrivate($msg, 'command'));
         $this->assertEquals('#channel', $msg->channel);
         $this->assertEquals('The newest channel topic!!', $msg->topic);
     }
@@ -46,12 +45,12 @@ class IrcMessageTest extends TestCase
     {
         $msg = new PrivmsgMessage(':Jerodev!~Jerodev@foo.bar.be PRIVMSG #channel :Hello World!');
 
-        $this->assertEquals('Jerodev!~Jerodev@foo.bar.be', $msg->source);
+        $this->assertEquals('Jerodev!~Jerodev@foo.bar.be', $this->getPrivate($msg, 'source'));
         $this->assertEquals('Jerodev', $msg->user);
-        $this->assertEquals('PRIVMSG', $msg->command);
+        $this->assertEquals('PRIVMSG', $this->getPrivate($msg, 'command'));
         $this->assertEquals('#channel', $msg->target);
-        $this->assertEquals('#channel', $msg->commandsuffix);
+        $this->assertEquals('#channel', $this->getPrivate($msg, 'commandsuffix'));
         $this->assertEquals('Hello World!', $msg->message);
-        $this->assertEquals('Hello World!', $msg->payload);
+        $this->assertEquals('Hello World!', $this->getPrivate($msg, 'payload'));
     }
 }
