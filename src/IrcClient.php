@@ -62,7 +62,7 @@ class IrcClient
         }
 
         if ($this->connection->isConnected() && $this->user->nickname !== $user->nickname) {
-            $this->sendCommand("NICK :$user->nickname");
+            $this->send("NICK :$user->nickname");
         }
 
         $this->user = $user;
@@ -103,7 +103,7 @@ class IrcClient
      *
      *  @param string $command The full command string to send.
      */
-    public function sendCommand(string $command): void
+    public function send(string $command): void
     {
         $this->connection->write($command);
     }
@@ -115,26 +115,53 @@ class IrcClient
      *  @param string $target The channel or user to message.
      *  @param string $message The message to send.
      */
-    public function sendMessage(string $target, string $message): void
+    public function say(string $target, string $message): void
     {
-        $this->sendCommand("PRIVMSG $target :$message");
+        $this->send("PRIVMSG $target :$message");
+    }
+
+    /**
+     *  Join an irc channel.
+     *
+     *  @param string $channel The name of the channel to join.
+     */
+    public function join(string $channel): void
+    {
+        $channel = $this->channelName($channel);
+        $this->send("JOIN $channel");
+    }
+
+    /**
+     *  Part from an irc channel.
+     *
+     *  @param string $channel The name of the channel to leave.
+     */
+    public function part(string $channel): void
+    {
+        $channel = $this->channelName($channel);
+
+        if (array_key_exists($channel, $this->channels)) {
+            $this->send("PART $channel");
+        }
     }
 
     /**
      *  Grab channel information by its name.
      *  This function makes sure the channel exists on this client first.
      *
-     *  @param string $name The name of this channel.
+     *  @param string $channel The name of this channel.
      *
      *  @return IrcChannel
      */
-    public function getChannel(string $name): IrcChannel
+    public function getChannel(string $channel): IrcChannel
     {
-        if (($this->channels[$name] ?? null) === null) {
-            $this->channels[$name] = new IrcChannel($name);
+        $channel = $this->channelName($channel);
+
+        if (($this->channels[$channel] ?? null) === null) {
+            $this->channels[$channel] = new IrcChannel($channel);
         }
 
-        return $this->channels[$name];
+        return $this->channels[$channel];
     }
 
     /**
@@ -157,11 +184,27 @@ class IrcClient
         $message->handle($this);
 
         if (!$this->isAuthenticated && $this->user) {
-            $this->sendCommand("USER {$this->user->nickname} * * :{$this->user->nickname}");
-            $this->sendCommand("NICK {$this->user->nickname}");
+            $this->send("USER {$this->user->nickname} * * :{$this->user->nickname}");
+            $this->send("NICK {$this->user->nickname}");
             $this->isAuthenticated = true;
         }
 
         //$this->messageEventHandlers->invoke($message->command, [$message]);
+    }
+
+    /**
+     *  Make sure all channel names have the same format.
+     *
+     *  @param string $channel The name of the channel to format.
+     *
+     *  @return string The formatted name.
+     */
+    private function channelName(string $channel): string
+    {
+        if ($channel[0] !== '#') {
+            $channel = "#$channel";
+        }
+
+        return $channel;
     }
 }

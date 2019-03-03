@@ -20,6 +20,6 @@ class PingMessage extends IrcMessage
             return;
         }
 
-        $client->sendCommand("PONG :$this->payload");
+        $client->send("PONG :$this->payload");
     }
 }

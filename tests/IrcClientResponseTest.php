@@ -14,10 +14,10 @@ class IrcClientResponseTest extends TestCase
     {
         $client = $this->getMockBuilder(IrcClient::class)
             ->setConstructorArgs([''])
-            ->setMethods(['sendCommand'])
+            ->setMethods(['send'])
             ->getMock();
         $client->expects($this->once())
-            ->method('sendCommand')
+            ->method('send')
             ->with('PONG :0123456');
 
         foreach ((new IrcMessageParser())->parse('PING :0123456') as $msg) {
@@ -32,12 +32,12 @@ class IrcClientResponseTest extends TestCase
     {
         $client = $this->getMockBuilder(IrcClient::class)
             ->disableOriginalConstructor()
-            ->setMethods(['sendCommand'])
+            ->setMethods(['send'])
             ->getMock();
         $client->expects($this->once())
-            ->method('sendCommand')
+            ->method('send')
             ->with('PRIVMSG #channel :Hello World!');
 
-        $client->sendMessage('#channel', 'Hello World!');
+        $client->say('#channel', 'Hello World!');
     }
 }
