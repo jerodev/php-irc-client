@@ -39,7 +39,7 @@ class TopicChangeMessage extends IrcMessage
     public function getEvents(): array
     {
         return [
-            new Event('topic', [$this->channel, $this->topic])
+            new Event('topic', [$this->channel, $this->topic]),
         ];
     }
 }

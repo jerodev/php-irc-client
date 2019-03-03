@@ -27,7 +27,7 @@ class PrivmsgMessage extends IrcMessage
     public function getEvents(): array
     {
         return [
-            new Event('message', [$this->user, $this->target, $this->message])
+            new Event('message', [$this->user, $this->target, $this->message]),
         ];
     }
 }

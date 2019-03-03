@@ -14,7 +14,7 @@ class MOTDMessage extends IrcMessage
     public function getEvents(): array
     {
         return [
-            new Event('motd', [$this->payload])
+            new Event('motd', [$this->payload]),
         ];
     }
 }
