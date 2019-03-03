@@ -14,7 +14,7 @@ class IrcMessage
 
     /** @var string */
     protected $commandsuffix;
-    
+
     /** @var bool */
     protected $handled;
 
@@ -36,7 +36,7 @@ class IrcMessage
             $this->payload = $matches['payload'] ?? null;
         }
     }
-    
+
     /**
      *  This function is always called after the message is parsed.
      *  The handle will only be executed once unless forced.

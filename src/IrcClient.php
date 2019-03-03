@@ -10,7 +10,7 @@ class IrcClient
 {
     /** @var IrcChannel[] */
     private $channels;
-    
+
     /** @var IrcConnection */
     private $connection;
 
@@ -33,7 +33,7 @@ class IrcClient
     public function __construct(string $server, $username = null, $channels = null)
     {
         $this->connection = new IrcConnection($server);
-        
+
         $this->user = $username === null ? null : new IrcUser($username);
         $this->channels = [];
         $this->messageEventHandlers = new EventHandlerCollection();
@@ -119,7 +119,7 @@ class IrcClient
     {
         $this->sendCommand("PRIVMSG $target :$message");
     }
-    
+
     /**
      *  Grab channel information by its name.
      *  This function makes sure the channel exists on this client first.
@@ -136,9 +136,9 @@ class IrcClient
 
         return $this->channels[$name];
     }
-    
+
     /**
-     *  Return a list of all channels
+     *  Return a list of all channels.
      *
      *  @return IrcChannel[]
      */
@@ -161,7 +161,7 @@ class IrcClient
             $this->sendCommand("NICK {$this->user->nickname}");
             $this->isAuthenticated = true;
         }
-        
+
         //$this->messageEventHandlers->invoke($message->command, [$message]);
     }
 }

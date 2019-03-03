@@ -41,15 +41,15 @@ class IrcMessageParser
             case 'PING':
                 $msg = new PingMessage($message);
                 break;
-             
+
             case 'PRIVMSG':
                 $msg = new PrivmsgMessage($message);
                 break;
-                
+
             case IrcCommand::RPL_WELCOME:
                 $msg = new WelcomeMessage($message);
                 break;
-                
+
             case 'TOPIC':
             case IrcCommand::RPL_TOPIC:
                 $msg = new TopicChangeMessage($message);
