@@ -3,7 +3,6 @@
 namespace Jerodev\PhpIrcClient\Messages;
 
 use Jerodev\PhpIrcClient\Helpers\Event;
-use Jerodev\PhpIrcClient\IrcClient;
 
 class MOTDMessage extends IrcMessage
 {
