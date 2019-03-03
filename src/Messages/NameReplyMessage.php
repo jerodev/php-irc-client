@@ -19,13 +19,13 @@ class NameReplyMessage extends IrcMessage
         $this->channel = preg_replace('/^[^\#]+(\#.*?)$/', '$1', $this->commandsuffix);
         $this->names = preg_split('/\s+/', $this->payload, -1, PREG_SPLIT_NO_EMPTY);
     }
-    
+
     public function handle(IrcClient $client, bool $force = false): void
     {
         if ($this->handled && !$force) {
             return;
         }
-        
+
         $client->getChannel($this->channel)->setUsers($this->names);
     }
 }

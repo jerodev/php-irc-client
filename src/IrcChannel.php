@@ -22,8 +22,8 @@ class IrcChannel
         $this->users = [];
     }
 
-    /** 
-     *  Fetch the name of the channel, including the `#`
+    /**
+     *  Fetch the name of the channel, including the `#`.
      *
      *  @return string
      */
@@ -31,7 +31,7 @@ class IrcChannel
     {
         return $this->name;
     }
-    
+
     /**
      *  Get the current channel topic.
      *

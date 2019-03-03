@@ -10,16 +10,16 @@ class PingMessage extends IrcMessage
     {
         parent::__construct($message);
     }
-    
+
     /**
-     *  Reply the ping message with a pong response
+     *  Reply the ping message with a pong response.
      */
     public function handle(IrcClient $client, bool $force = false): void
     {
         if ($this->handled && !$force) {
             return;
         }
-        
+
         $client->sendCommand("PONG :$this->payload");
     }
 }

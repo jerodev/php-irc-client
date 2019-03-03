@@ -19,7 +19,7 @@ class WelcomeMessage extends IrcMessage
         if ($this->handled && !$force) {
             return;
         }
-        
+
         foreach ($client->getChannels() as $channel) {
             $client->sendCommand("JOIN {$channel->getName()}");
         }
