@@ -27,7 +27,7 @@ class PingMessage extends IrcMessage
     public function getEventArgs(): array
     {
         return [
-            new EventArgs('ping')
+            new EventArgs('ping'),
         ];
     }
 }

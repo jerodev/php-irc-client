@@ -29,7 +29,7 @@ class WelcomeMessage extends IrcMessage
     public function getEventArgs(): array
     {
         return [
-            new EventArgs('registered')
+            new EventArgs('registered'),
         ];
     }
 }

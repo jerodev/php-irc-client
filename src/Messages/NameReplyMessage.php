@@ -34,7 +34,7 @@ class NameReplyMessage extends IrcMessage
     {
         return [
             new EventArgs('names', [$this->channel, $this->names]),
-            new EventArgs("names#$this->channel", [$this->names])
+            new EventArgs("names#$this->channel", [$this->names]),
         ];
     }
 }
