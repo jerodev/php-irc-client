@@ -27,14 +27,14 @@ class IrcClient
      *  Create a new IrcClient instance.
      *
      *  @param string $server The server address to connect to including the port: `address:port`.
-     *  @param null|string $username The username to use on the server. Can be set in more detail using `setUser()`.
+     *  @param null|string $nickname The username to use on the server. Can be set in more detail using `setUser()`.
      *  @param null|string|string[] $channels The channels to join on connect.
      */
-    public function __construct(string $server, $username = null, $channels = null)
+    public function __construct(string $server, ?string $nickname = null, $channels = null)
     {
         $this->connection = new IrcConnection($server);
 
-        $this->user = $username === null ? null : new IrcUser($username);
+        $this->user = $nickname === null ? null : new IrcUser($nickname);
         $this->channels = [];
         $this->messageEventHandlers = new EventHandlerCollection();
 
