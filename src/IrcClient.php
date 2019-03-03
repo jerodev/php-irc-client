@@ -201,8 +201,8 @@ class IrcClient
             $this->isAuthenticated = true;
         }
 
-        foreach ($message->getEventArgs() as $eventArgs) {
-            $this->messageEventHandlers->invoke($eventArgs);
+        foreach ($message->getEvents() as $event) {
+            $this->messageEventHandlers->invoke($event);
         }
     }
 

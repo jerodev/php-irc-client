@@ -2,7 +2,7 @@
 
 namespace Jerodev\PhpIrcClient\Messages;
 
-use Jerodev\PhpIrcClient\Helpers\EventArgs;
+use Jerodev\PhpIrcClient\Helpers\Event;
 
 class PrivmsgMessage extends IrcMessage
 {
@@ -24,10 +24,10 @@ class PrivmsgMessage extends IrcMessage
         $this->message = $this->payload;
     }
 
-    public function getEventArgs(): array
+    public function getEvents(): array
     {
         return [
-            new EventArgs('message', [$this->user, $this->target, $this->message])
+            new Event('message', [$this->user, $this->target, $this->message])
         ];
     }
 }

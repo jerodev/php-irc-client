@@ -2,7 +2,7 @@
 
 namespace Jerodev\PhpIrcClient\Messages;
 
-use Jerodev\PhpIrcClient\Helpers\EventArgs;
+use Jerodev\PhpIrcClient\Helpers\Event;
 use Jerodev\PhpIrcClient\IrcClient;
 
 class IrcMessage
@@ -53,11 +53,11 @@ class IrcMessage
     }
 
     /**
-     *  Get the arguments needed for the event callback for this message.
+     *  Get the events that should be invoked for this message.
      *
-     *  @return EventArgs[] An array of event args to emit.
+     *  @return Event[]
      */
-    public function getEventArgs(): array
+    public function getEvents(): array
     {
         return [];
     }

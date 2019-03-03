@@ -2,7 +2,7 @@
 
 namespace Jerodev\PhpIrcClient\Messages;
 
-use Jerodev\PhpIrcClient\Helpers\EventArgs;
+use Jerodev\PhpIrcClient\Helpers\Event;
 use Jerodev\PhpIrcClient\IrcClient;
 
 class MOTDMessage extends IrcMessage
@@ -12,10 +12,10 @@ class MOTDMessage extends IrcMessage
         parent::__construct($message);
     }
 
-    public function getEventArgs(): array
+    public function getEvents(): array
     {
         return [
-            new EventArgs('motd', [$this->payload])
+            new Event('motd', [$this->payload])
         ];
     }
 }

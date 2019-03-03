@@ -2,7 +2,7 @@
 
 namespace Jerodev\PhpIrcClient\Messages;
 
-use Jerodev\PhpIrcClient\Helpers\EventArgs;
+use Jerodev\PhpIrcClient\Helpers\Event;
 use Jerodev\PhpIrcClient\IrcClient;
 
 class WelcomeMessage extends IrcMessage
@@ -26,10 +26,10 @@ class WelcomeMessage extends IrcMessage
         }
     }
 
-    public function getEventArgs(): array
+    public function getEvents(): array
     {
         return [
-            new EventArgs('registered')
+            new Event('registered')
         ];
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Jerodev\PhpIrcClient\Helpers;
 
-class EventArgs
+class Event
 {
     /** @var string */
     private $event;

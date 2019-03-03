@@ -2,7 +2,7 @@
 
 namespace Jerodev\PhpIrcClient\Messages;
 
-use Jerodev\PhpIrcClient\Helpers\EventArgs;
+use Jerodev\PhpIrcClient\Helpers\Event;
 use Jerodev\PhpIrcClient\IrcClient;
 
 class PingMessage extends IrcMessage
@@ -24,10 +24,10 @@ class PingMessage extends IrcMessage
         $client->send("PONG :$this->payload");
     }
 
-    public function getEventArgs(): array
+    public function getEvents(): array
     {
         return [
-            new EventArgs('ping')
+            new Event('ping')
         ];
     }
 }

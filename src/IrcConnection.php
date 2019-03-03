@@ -3,7 +3,7 @@
 namespace Jerodev\PhpIrcClient;
 
 use Exception;
-use Jerodev\PhpIrcClient\Helpers\EventArgs;
+use Jerodev\PhpIrcClient\Helpers\Event;
 use Jerodev\PhpIrcClient\Helpers\EventHandlerCollection;
 use Jerodev\PhpIrcClient\Messages\IrcMessage;
 use React\EventLoop\LoopInterface;
@@ -127,6 +127,6 @@ class IrcConnection
      */
     private function handleMessage(IrcMessage $message): void
     {
-        $this->eventHandlerCollection->invoke(new EventArgs('data', [$message]));
+        $this->eventHandlerCollection->invoke(new Event('data', [$message]));
     }
 }
