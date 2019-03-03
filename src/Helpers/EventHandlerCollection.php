@@ -35,14 +35,13 @@ class EventHandlerCollection
     /**
      *  Invoke all handlers for a specific event.
      *
-     *  @param string $event The event to invoke handlers for.
-     *  @param array $arguments An array of arguments to be sent to the event handler.
+     *  @param EventArgs $eventArgs
      */
-    public function invoke(string $event, array $arguments = []): void
+    public function invoke(EventArgs $eventArgs): void
     {
-        $handlers = array_merge($this->eventHandlers['*'] ?? [], $this->eventHandlers[$event] ?? []);
+        $handlers = array_merge($this->eventHandlers['*'] ?? [], $this->eventHandlers[$eventArgs->getEvent()] ?? []);
         foreach ($handlers as $handler) {
-            $handler(...$arguments);
+            $handler(...$eventArgs->getArguments());
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Jerodev\PhpIrcClient\Messages;
 
+use Jerodev\PhpIrcClient\Helpers\EventArgs;
 use Jerodev\PhpIrcClient\IrcClient;
 
 class TopicChangeMessage extends IrcMessage
@@ -11,6 +12,9 @@ class TopicChangeMessage extends IrcMessage
 
     /** @var string */
     public $topic;
+
+    /** @var string */
+    public $user;
 
     public function __construct(string $message)
     {
@@ -30,5 +34,12 @@ class TopicChangeMessage extends IrcMessage
         }
 
         $client->getChannel($this->channel)->setTopic($this->topic);
+    }
+
+    public function getEventArgs(): array
+    {
+        return [
+            new EventArgs('topic', [$this->channel, $this->topic])
+        ];
     }
 }

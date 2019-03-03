@@ -2,6 +2,7 @@
 
 namespace Jerodev\PhpIrcClient\Messages;
 
+use Jerodev\PhpIrcClient\Helpers\EventArgs;
 use Jerodev\PhpIrcClient\IrcClient;
 
 class NameReplyMessage extends IrcMessage
@@ -27,5 +28,13 @@ class NameReplyMessage extends IrcMessage
         }
 
         $client->getChannel($this->channel)->setUsers($this->names);
+    }
+
+    public function getEventArgs(): array
+    {
+        return [
+            new EventArgs('names', [$this->channel, $this->names]),
+            new EventArgs("names#$this->channel", [$this->names])
+        ];
     }
 }

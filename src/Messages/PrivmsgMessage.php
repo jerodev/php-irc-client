@@ -2,6 +2,8 @@
 
 namespace Jerodev\PhpIrcClient\Messages;
 
+use Jerodev\PhpIrcClient\Helpers\EventArgs;
+
 class PrivmsgMessage extends IrcMessage
 {
     /** @var string */
@@ -20,5 +22,12 @@ class PrivmsgMessage extends IrcMessage
         $this->user = preg_replace('/^([^!]+)!.*?$/', '$1', $this->source);
         $this->target = $this->commandsuffix;
         $this->message = $this->payload;
+    }
+
+    public function getEventArgs(): array
+    {
+        return [
+            new EventArgs('message', [$this->user, $this->target, $this->message])
+        ];
     }
 }

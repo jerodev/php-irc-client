@@ -99,6 +99,17 @@ class IrcClient
     }
 
     /**
+     *  Register to an event callback.
+     *
+     *  @param string $event The event to register to.
+     *  @param callable $callback The callback to be execute when the event is emitted.
+     */
+    public function on(string $event, callable $callback): void
+    {
+        $this->messageEventHandlers->addHandler($event, $callback);
+    }
+
+    /**
      *  Send a raw command string to the irc server.
      *
      *  @param string $command The full command string to send.
@@ -190,7 +201,9 @@ class IrcClient
             $this->isAuthenticated = true;
         }
 
-        //$this->messageEventHandlers->invoke($message->command, [$message]);
+        foreach ($message->getEventArgs() as $eventArgs) {
+            $this->messageEventHandlers->invoke($eventArgs);
+        }
     }
 
     /**
