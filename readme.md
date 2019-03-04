@@ -94,3 +94,7 @@ Emitted when a message is sent to the user or to a joined channel.
 | `$from` | *string* | The nickname of the user who sent the message.
 | `$to` | *string* | The channel where the message was sent, or the name of the client in case of a private message.
 | `$message` | *string* | The received message.
+
+> You can also specify the channel you want to listen on by adding `#channel` to the event.<br />
+> For example: `$client->on('message#channel', function ($from, $message) {})`
+
