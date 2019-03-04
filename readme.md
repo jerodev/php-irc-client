@@ -14,7 +14,12 @@ A pure PHP irc client based on [ReactPHP](https://reactphp.org/).
     - [Leaving a channel](#client-leave-channel)
     - [Sending messages](#client-sending-messages)
   - [Events](#events)
+    - [Registered on server](#client-event-registered)
+    - [Message of the day](#client-event-motd)
+    - [Topic changed](#client-event-topic)
+    - [Channel users received](#client-event-names)
     - [Message received](#client-event-message)
+    - [Ping received](#client-event-ping)
 
 ---
 
@@ -79,13 +84,52 @@ Sends a message to a channel or user.
 
 ## Events
 
-The `on()` function on the client can be used to register to several different events. This can be done both before and after connecting to the irc server. Events might have different callback arguments, all are described below.
+The `on()` function on the client can be used to register to several different events. This can be done both before and after connecting to the irc server. Events have variable callback arguments, all are described below.
+
+### <a name="client-event-registered"></a> Channel users received
+
+    $client->on('registered', function () { });
+
+Emitted when the server sends the initial welcome message (`001`). This indicates that you are connected to the server.
+
+### <a name="client-event-motd"></a> Message of the day
+
+    $client->on('motd', function (string $motd) { });
+
+Emmited when the server sends the message of the day to the client. If message of the day is multiple lines, this event might be emitted multiple times.
+
+| Name | Type | Description
+| --- | --- | --- |
+| `$motd` | *string* | The server's *Message Of The Day*.
+
+### <a name="client-event-topic"></a> Topic changed
+
+    $client->on('topic', function (string $channel, string $topic) { });
+
+Emmited when joining a channel or when the topic of a joined channel changes.
+
+| Name | Type | Description
+| --- | --- | --- |
+| `$channel` | *string* | The channel where the topic has changed.
+| `$topic` | *string* | The new topic for this channel.
+
+### <a name="client-event-names"></a> Channel users received
+
+    $client->on('names', function (string $channel, string[] $nicks) { });
+
+Emitted when the server sends a list of nicks for a channels. This happens immediately after joining a channel and on request.
+
+| Name | Type | Description
+| --- | --- | --- |
+| `$channel` | *string* | The channel name.
+| `$names` | *string[]* | A list of nicknames who are currently in this channel.
+
+> You can also specify the channel you want to listen on by adding `#channel` to the event.<br />
+> For example: `$client->on('names#channel', function ($names) {})`
 
 ### <a name="client-event-message"></a> Message received
 
-    $client->on('message', function (string $from, string $to, string $message) {
-        //
-    });
+    $client->on('message', function (string $from, string $to, string $message) { });
 
 Emitted when a message is sent to the user or to a joined channel.
 
@@ -98,3 +142,8 @@ Emitted when a message is sent to the user or to a joined channel.
 > You can also specify the channel you want to listen on by adding `#channel` to the event.<br />
 > For example: `$client->on('message#channel', function ($from, $message) {})`
 
+### <a name="client-event-ping"></a> Ping received
+
+    $client->on('ping', function () { });
+
+Emmited when the server sends a `ping` request to the client. The pong request has already been send back to the server before this event is emitted.
