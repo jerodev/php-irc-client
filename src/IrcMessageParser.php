@@ -2,6 +2,7 @@
 
 namespace Jerodev\PhpIrcClient;
 
+use Generator;
 use Jerodev\PhpIrcClient\Messages\IrcMessage;
 use Jerodev\PhpIrcClient\Messages\NameReplyMessage;
 use Jerodev\PhpIrcClient\Messages\PingMessage;
@@ -16,14 +17,16 @@ class IrcMessageParser
      *
      *  @param string $message A string received from the irc server
      *
-     *  @return IrcMessage[]
+     *  @return Generator|IrcMessage[]
      */
     public function parse(string $message)
     {
-        if ($messages = preg_split('/\r?\n\r?/', $message, -1, PREG_SPLIT_NO_EMPTY)) {
-            foreach ($messages as $msg) {
-                yield $this->parseSingle($msg);
+        foreach (explode("\n", $message) as $msg) {
+            if (empty(trim($msg))) {
+                continue;
             }
+            
+            yield $this->parseSingle($msg);
         }
     }
 
@@ -36,8 +39,7 @@ class IrcMessageParser
      */
     private function parseSingle(string $message): IrcMessage
     {
-        $command = preg_replace('/^(?::[^\s]+\s+)?([^\s]+).*?$/', '$1', $message);
-        switch ($command) {
+        switch ($this->getCommand($message)) {
             case 'PING':
                 $msg = new PingMessage($message);
                 break;
@@ -65,5 +67,20 @@ class IrcMessageParser
         }
 
         return $msg;
+    }
+    
+    /**
+     *  Get the COMMAND part of an irc message
+     *
+     *  @param string $message a raw irc message
+     *
+     *  @return string
+     */
+    private function getCommand(string $message): string
+    {
+        if ($message[0] === ':') {
+            $message = trim(strstr($message, ' '));
+        }
+        return strstr($message, ' ', true);
     }
 }

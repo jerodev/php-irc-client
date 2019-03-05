@@ -16,8 +16,8 @@ class NameReplyMessage extends IrcMessage
     {
         parent::__construct($message);
 
-        $this->channel = preg_replace('/^[^\#]+(\#.*?)$/', '$1', $this->commandsuffix);
-        $this->names = preg_split('/\s+/', $this->payload, -1, PREG_SPLIT_NO_EMPTY);
+        $this->channel = strstr($this->commandsuffix, '#');
+        $this->names = explode(' ', $this->payload);
     }
     
     public function handle(IrcClient $client, bool $force = false): void
@@ -26,6 +26,8 @@ class NameReplyMessage extends IrcMessage
             return;
         }
         
-        $client->getChannel($this->channel)->setUsers($this->names);
+        if ($this->names) {
+            $client->getChannel($this->channel)->setUsers($this->names);
+        }
     }
 }

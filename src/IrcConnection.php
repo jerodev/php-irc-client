@@ -126,6 +126,7 @@ class IrcConnection
      */
     private function handleMessage(IrcMessage $message): void
     {
+        var_dump($message);
         $this->eventHandlerCollection->invoke('data', [$message]);
     }
 }

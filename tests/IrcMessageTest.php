@@ -2,13 +2,26 @@
 
 namespace Tests;
 
+use Jerodev\PhpIrcClient\IrcMessageParser;
 use Jerodev\PhpIrcClient\Messages\IrcMessage;
 use Jerodev\PhpIrcClient\Messages\NameReplyMessage;
+use Jerodev\PhpIrcClient\Messages\PingMessage;
 use Jerodev\PhpIrcClient\Messages\PrivmsgMessage;
 use Jerodev\PhpIrcClient\Messages\TopicChangeMessage;
 
 class IrcMessageTest extends TestCase
 {
+    public function testParseMultiple()
+    {
+        $msg = "PING :0123456\nPING :0123457";
+        $commands = iterator_to_array((new IrcMessageParser)->parse($msg));
+        
+        $this->assertEquals([
+            new PingMessage('PING :0123456'),
+            new PingMessage('PING :0123457'),
+        ], $commands);
+    }
+    
     public function testParseNameReply()
     {
         $msg = new NameReplyMessage(':Jerodev!~Jerodev@foo.bar.be 353 IrcBot = #channel :IrcBot @Q OtherUser');

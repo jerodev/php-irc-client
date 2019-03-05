@@ -19,7 +19,7 @@ class PrivmsgMessage extends IrcMessage
     {
         parent::__construct($message);
         
-        $this->user = preg_replace('/^([^!]+)!.*?$/', '$1', $this->source);
+        $this->user = strstr($this->source, '!', true);
         $this->target = $this->commandsuffix;
         $this->message = $this->payload;
     }

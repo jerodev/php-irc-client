@@ -24,17 +24,10 @@ class IrcMessage
     /** @var string */
     protected $source;
 
-    public function __construct(string $message)
+    public function __construct(string $command)
     {
         $this->handled = false;
-        $this->rawMessage = $message;
-
-        if (preg_match('/^(?::(?<source>[^\s]+)\s*)?(?<command>[^\s]+)\s*(?<commandsuffix>[^:$]+)?\s*(?::(?<payload>.*?))?$/', $message, $matches)) {
-            $this->source = $matches['source'] ?? null;
-            $this->command = $matches['command'] ?? null;
-            $this->commandsuffix = trim($matches['commandsuffix'] ?? null);
-            $this->payload = $matches['payload'] ?? null;
-        }
+        $this->parse($command);
     }
     
     /**
@@ -48,6 +41,43 @@ class IrcMessage
     {
         if ($this->handled && !$force) {
             return;
+        }
+    }
+    
+    /**
+     *  Parse the irc command string to local properties
+     *
+     *  @param string $command
+     */
+    private function parse(string $command): void
+    {
+        $command = trim($command);
+        $this->rawMessage = $command;
+        $i = 0;
+        
+        if ($command[0] === ':') {
+            $i = strpos($command, ' ');
+            $this->source = substr($command, 1, $i - 1);
+            
+            $i++;
+        }
+        
+        $j = strpos($command, ' ', $i);
+        if (is_numeric($j)) {
+            $this->command = substr($command, $i, $j - $i);
+        } else {
+            $this->command = substr($command, $i);
+            return;
+        }
+        
+        $i = strpos($command, ':', $j);
+        if (is_numeric($i)) {
+            if ($i !== $j + 1) {
+                $this->commandsuffix = substr($command, $j + 1, $i - $j - 2);
+            }
+            $this->payload = substr($command, $i + 1);
+        } else {
+            $this->commandsuffix = substr($command, $j + 1);
         }
     }
 }

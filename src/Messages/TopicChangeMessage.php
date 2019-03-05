@@ -16,7 +16,7 @@ class TopicChangeMessage extends IrcMessage
     {
         parent::__construct($message);
 
-        $this->channel = preg_replace('/^[^\#]*(\#.*?)$/', '$1', $this->commandsuffix);
+        $this->channel = strstr($this->commandsuffix, '#');
         $this->topic = $this->payload;
     }
     
