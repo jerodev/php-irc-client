@@ -27,7 +27,7 @@ class TestCase extends PHPUnitTestCase
         $reflector = new ReflectionClass(get_class($object));
         $property = $reflector->getProperty($property);
         $property->setAccessible(true);
-            
+
         return $property->getValue($object);
     }
 }

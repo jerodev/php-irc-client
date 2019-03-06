@@ -4,6 +4,7 @@ namespace Jerodev\PhpIrcClient;
 
 use Generator;
 use Jerodev\PhpIrcClient\Messages\IrcMessage;
+use Jerodev\PhpIrcClient\Messages\MOTDMessage;
 use Jerodev\PhpIrcClient\Messages\NameReplyMessage;
 use Jerodev\PhpIrcClient\Messages\PingMessage;
 use Jerodev\PhpIrcClient\Messages\PrivmsgMessage;
@@ -43,15 +44,15 @@ class IrcMessageParser
             case 'PING':
                 $msg = new PingMessage($message);
                 break;
-             
+
             case 'PRIVMSG':
                 $msg = new PrivmsgMessage($message);
                 break;
-                
+
             case IrcCommand::RPL_WELCOME:
                 $msg = new WelcomeMessage($message);
                 break;
-                
+
             case 'TOPIC':
             case IrcCommand::RPL_TOPIC:
                 $msg = new TopicChangeMessage($message);
@@ -59,6 +60,10 @@ class IrcMessageParser
 
             case IrcCommand::RPL_NAMREPLY:
                 $msg = new NameReplyMessage($message);
+                break;
+
+            case IrcCommand::RPL_MOTD:
+                $msg = new MOTDMessage($message);
                 break;
 
             default:

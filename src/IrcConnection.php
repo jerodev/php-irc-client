@@ -3,6 +3,7 @@
 namespace Jerodev\PhpIrcClient;
 
 use Exception;
+use Jerodev\PhpIrcClient\Helpers\Event;
 use Jerodev\PhpIrcClient\Helpers\EventHandlerCollection;
 use Jerodev\PhpIrcClient\Messages\IrcMessage;
 use React\EventLoop\LoopInterface;
@@ -12,22 +13,22 @@ class IrcConnection
 {
     /** @var bool */
     private $connected;
-    
+
     /** @var ConnectionInterface|null */
     private $connection;
-    
+
     /** @var EventHandlerCollection */
     private $eventHandlerCollection;
-    
+
     /** @var LoopInterface */
     private $loop;
-    
+
     /** @var IrcMessageParser */
     private $messageParser;
-    
+
     /** @var string */
     private $server;
-    
+
     public function __construct(string $server)
     {
         $this->connected = false;
@@ -35,8 +36,8 @@ class IrcConnection
         $this->messageParser = new IrcMessageParser();
         $this->server = $server;
     }
-    
-    /** 
+
+    /**
      *  Open a connection to the irc server.
      */
     public function open()
@@ -56,7 +57,7 @@ class IrcConnection
                     $this->handleMessage($msg);
                 }
             });
-            
+
             $this->connection->on('close', function () {
                 $this->connected = false;
             });
@@ -67,7 +68,7 @@ class IrcConnection
 
         $this->loop->run();
     }
-    
+
     /**
      *  Close the current irc server connection.
      */
@@ -78,7 +79,7 @@ class IrcConnection
             $this->loop->stop();
         }
     }
-    
+
     /**
      *  Test if there is an open connection to the irc server.
      */
@@ -86,18 +87,18 @@ class IrcConnection
     {
         return $this->connection && $this->connected;
     }
-    
-    /** 
+
+    /**
      *  Set a callback for received irc data
-     *  An IrcMessage object will be passed to the callback
+     *  An IrcMessage object will be passed to the callback.
      *
-     *  @param callable $function The function to be called.  
+     *  @param callable $function The function to be called.
      */
     public function onData(callable $function): void
     {
         $this->eventHandlerCollection->addHandler('data', $function);
     }
-    
+
     /**
      * Send a command to the irc server.
      *
@@ -110,15 +111,15 @@ class IrcConnection
         if (!$this->isConnected()) {
             throw new Exception('No open connection was found to write commands to.');
         }
-        
+
         // Make sure the command ends in a newline character
         if (substr($command, -1) !== "\n") {
             $command .= "\n";
         }
-        
+
         $this->connection->write($command);
     }
-    
+
     /**
      *  Handle a single parsed IrcMessage.
      *
@@ -126,7 +127,6 @@ class IrcConnection
      */
     private function handleMessage(IrcMessage $message): void
     {
-        var_dump($message);
-        $this->eventHandlerCollection->invoke('data', [$message]);
+        $this->eventHandlerCollection->invoke(new Event('data', [$message]));
     }
 }

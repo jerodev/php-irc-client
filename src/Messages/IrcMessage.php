@@ -2,6 +2,7 @@
 
 namespace Jerodev\PhpIrcClient\Messages;
 
+use Jerodev\PhpIrcClient\Helpers\Event;
 use Jerodev\PhpIrcClient\IrcClient;
 
 class IrcMessage
@@ -14,7 +15,7 @@ class IrcMessage
 
     /** @var string */
     protected $commandsuffix;
-    
+
     /** @var bool */
     protected $handled;
 
@@ -29,7 +30,7 @@ class IrcMessage
         $this->handled = false;
         $this->parse($command);
     }
-    
+
     /**
      *  This function is always called after the message is parsed.
      *  The handle will only be executed once unless forced.
@@ -42,6 +43,16 @@ class IrcMessage
         if ($this->handled && !$force) {
             return;
         }
+    }
+    
+    /**
+     *  Get the events that should be invoked for this message.
+     *
+     *  @return Event[]
+     */
+    public function getEvents(): array
+    {
+        return [];
     }
     
     /**

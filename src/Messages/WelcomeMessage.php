@@ -2,6 +2,7 @@
 
 namespace Jerodev\PhpIrcClient\Messages;
 
+use Jerodev\PhpIrcClient\Helpers\Event;
 use Jerodev\PhpIrcClient\IrcClient;
 
 class WelcomeMessage extends IrcMessage
@@ -19,9 +20,16 @@ class WelcomeMessage extends IrcMessage
         if ($this->handled && !$force) {
             return;
         }
-        
+
         foreach ($client->getChannels() as $channel) {
-            $client->sendCommand("JOIN {$channel->getName()}");
+            $client->join($channel->getName());
         }
+    }
+
+    public function getEvents(): array
+    {
+        return [
+            new Event('registered'),
+        ];
     }
 }

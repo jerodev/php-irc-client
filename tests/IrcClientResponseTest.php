@@ -8,16 +8,36 @@ use Jerodev\PhpIrcClient\IrcMessageParser;
 class IrcClientResponseTest extends TestCase
 {
     /**
+     *  Test generating join/part commands.
+     */
+    public function testJoinPartChannel()
+    {
+        $client = $this->getMockBuilder(IrcClient::class)
+            ->setConstructorArgs([''])
+            ->setMethods(['send'])
+            ->getMock();
+        $client->expects($this->exactly(2))
+            ->method('send')
+            ->withConsecutive(
+                ['JOIN #php-irc-client-test'],
+                ['PART #php-irc-client-test']
+            );
+
+        $client->join('#php-irc-client-test');
+        $client->part('#php-irc-client-test');
+    }
+
+    /**
      *  Make sure the client returns a PING request with an equal PONG response.
      */
     public function testPingPong()
     {
         $client = $this->getMockBuilder(IrcClient::class)
             ->setConstructorArgs([''])
-            ->setMethods(['sendCommand'])
+            ->setMethods(['send'])
             ->getMock();
         $client->expects($this->once())
-            ->method('sendCommand')
+            ->method('send')
             ->with('PONG :0123456');
 
         foreach ((new IrcMessageParser())->parse('PING :0123456') as $msg) {
@@ -32,12 +52,12 @@ class IrcClientResponseTest extends TestCase
     {
         $client = $this->getMockBuilder(IrcClient::class)
             ->disableOriginalConstructor()
-            ->setMethods(['sendCommand'])
+            ->setMethods(['send'])
             ->getMock();
         $client->expects($this->once())
-            ->method('sendCommand')
+            ->method('send')
             ->with('PRIVMSG #channel :Hello World!');
 
-        $client->sendMessage('#channel', 'Hello World!');
+        $client->say('#channel', 'Hello World!');
     }
 }
