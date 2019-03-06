@@ -1,7 +1,7 @@
 # PHP IRC Client
 [![Build Status](https://travis-ci.com/jerodev/php-irc-client.svg?branch=master)](https://travis-ci.com/jerodev/php-irc-client) [![StyleCI](https://github.styleci.io/repos/173153410/shield?branch=master)](https://github.styleci.io/repos/173153410) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jerodev/php-irc-client/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/jerodev/php-irc-client/?branch=master)
 
-A pure PHP irc client based on [ReactPHP](https://reactphp.org/).
+A pure PHP IRC client based on [ReactPHP](https://reactphp.org/).
 
 > :wrench: This project is under development and will probably not work in its current state.
 
@@ -25,7 +25,7 @@ A pure PHP irc client based on [ReactPHP](https://reactphp.org/).
 
 ## Client
 
-The client is the heart of the library, this object is used to perform all communication between your application and the irc server. It will manage the connection to the irc server and has all functions needed to interact with the server.
+The client is the heart of the library, this object is used to perform all communication between your application and the IRC server. It will manage the connection to the IRC server and has all functions needed to interact with the server.
 
     use Jerodev\PhpIrcClient\IrcClient;
 
@@ -36,13 +36,13 @@ The client is the heart of the library, this object is used to perform all commu
 
     $client->connect()
 
-This function opens the connection to the irc server. A username has to be set before the connection can be opened.
+This function opens the connection to the IRC server. Username has to be set before the connection can be opened.
 
 ### <a name="client-send-command"></a> Sending commands to the server
 
     $client->send(string $command)
 
-Sends a raw irc command directly to the server. This method should only be used if you are realy know what you are doing, it is recommended to use the built-in functions below.
+Sends a raw IRC command directly to the server. This method should only be used if you really know what you are doing, it is recommended to use the built-in functions below.
 
 | Name | Type | Description
 | --- | --- | --- |
@@ -84,9 +84,9 @@ Sends a message to a channel or user.
 
 ## Events
 
-The `on()` function on the client can be used to register to several different events. This can be done both before and after connecting to the irc server. Events have variable callback arguments, all are described below.
+The `on()` function on the client can be used to register to several different events. This can be done both before and after connecting to the IRC server. Events have variable callback arguments, all are described below.
 
-### <a name="client-event-registered"></a> Channel users received
+### <a name="client-event-registered"></a> Registered on server
 
     $client->on('registered', function () { });
 
@@ -96,7 +96,7 @@ Emitted when the server sends the initial welcome message (`001`). This indicate
 
     $client->on('motd', function (string $motd) { });
 
-Emmited when the server sends the message of the day to the client. If message of the day is multiple lines, this event might be emitted multiple times.
+Emitted when the server sends the message of the day to the client. If the message of the day is multiple lines, this event might be emitted multiple times.
 
 | Name | Type | Description
 | --- | --- | --- |
@@ -106,7 +106,7 @@ Emmited when the server sends the message of the day to the client. If message o
 
     $client->on('topic', function (string $channel, string $topic) { });
 
-Emmited when joining a channel or when the topic of a joined channel changes.
+Emitted when joining a channel or when the topic of a joined channel changes.
 
 | Name | Type | Description
 | --- | --- | --- |
@@ -117,7 +117,7 @@ Emmited when joining a channel or when the topic of a joined channel changes.
 
     $client->on('names', function (string $channel, string[] $nicks) { });
 
-Emitted when the server sends a list of nicks for a channels. This happens immediately after joining a channel and on request.
+Emitted when the server sends a list of nicks for a channel. This happens immediately after joining a channel and on request.
 
 | Name | Type | Description
 | --- | --- | --- |
@@ -146,4 +146,4 @@ Emitted when a message is sent to the user or to a joined channel.
 
     $client->on('ping', function () { });
 
-Emmited when the server sends a `ping` request to the client. The pong request has already been send back to the server before this event is emitted.
+Emitted when the server sends a `ping` request to the client. The pong request has already been sent back to the server before this event is emitted.
