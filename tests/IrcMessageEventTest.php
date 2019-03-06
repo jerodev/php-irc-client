@@ -11,6 +11,11 @@ use Jerodev\PhpIrcClient\Messages\PingMessage;
 
 class IrcMessageEventTest extends TestCase
 {
+    public function testMOTD()
+    {
+        $this->invokeClientEvents(':Jerodev!~Jerodev@foo.bar.be 372 IrcBot :Message of the day', [new Event('motd', ['Message of the day'])]);
+    }
+    
     public function testNamesEvent()
     {
         $this->invokeClientEvents(

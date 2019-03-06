@@ -4,6 +4,7 @@ namespace Tests;
 
 use Jerodev\PhpIrcClient\IrcMessageParser;
 use Jerodev\PhpIrcClient\Messages\IrcMessage;
+use Jerodev\PhpIrcClient\Messages\MOTDMessage;
 use Jerodev\PhpIrcClient\Messages\NameReplyMessage;
 use Jerodev\PhpIrcClient\Messages\PingMessage;
 use Jerodev\PhpIrcClient\Messages\PrivmsgMessage;
@@ -20,6 +21,16 @@ class IrcMessageTest extends TestCase
             new PingMessage('PING :0123456'),
             new PingMessage('PING :0123457'),
         ], $commands);
+    }
+    
+    public function testParseMotd()
+    {
+        $msg = new MOTDMessage(':Jerodev!~Jerodev@foo.bar.be 372 IrcBot :Message of the day');
+
+        $this->assertEquals('Jerodev!~Jerodev@foo.bar.be', $this->getPrivate($msg, 'source'));
+        $this->assertEquals('372', $this->getPrivate($msg, 'command'));
+        $this->assertEquals('IrcBot', $this->getPrivate($msg, 'commandsuffix'));
+        $this->assertEquals('Message of the day', $this->getPrivate($msg, 'payload'));
     }
     
     public function testParseNameReply()
