@@ -19,7 +19,9 @@ class TestCase extends PHPUnitTestCase
     protected function setPrivate($object, string $property, $value = null): void
     {
         $reflector = new ReflectionClass(get_class($object));
-        $reflector->getProperty($property)->setValue($object, $value);
+        $property = $reflector->getProperty($property);
+        $property->setAccessible(true);
+        $property->setValue($object, $value);
     }
 
     protected function getPrivate($object, string $property)

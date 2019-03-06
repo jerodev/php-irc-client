@@ -2,6 +2,7 @@
 
 namespace Jerodev\PhpIrcClient\Messages;
 
+use Generator;
 use Jerodev\PhpIrcClient\Helpers\Event;
 use Jerodev\PhpIrcClient\IrcClient;
 
@@ -50,7 +51,7 @@ class IrcMessage
      *
      *  @return Event[]
      */
-    public function getEvents(): array
+    public function getEvents()
     {
         return [];
     }
