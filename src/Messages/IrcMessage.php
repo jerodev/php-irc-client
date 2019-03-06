@@ -2,7 +2,6 @@
 
 namespace Jerodev\PhpIrcClient\Messages;
 
-use Generator;
 use Jerodev\PhpIrcClient\Helpers\Event;
 use Jerodev\PhpIrcClient\IrcClient;
 
