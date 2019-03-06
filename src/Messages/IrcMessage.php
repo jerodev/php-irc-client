@@ -45,7 +45,7 @@ class IrcMessage
             return;
         }
     }
-    
+
     /**
      *  Get the events that should be invoked for this message.
      *
@@ -55,9 +55,9 @@ class IrcMessage
     {
         return [];
     }
-    
+
     /**
-     *  Parse the irc command string to local properties
+     *  Parse the irc command string to local properties.
      *
      *  @param string $command
      */
@@ -66,22 +66,23 @@ class IrcMessage
         $command = trim($command);
         $this->rawMessage = $command;
         $i = 0;
-        
+
         if ($command[0] === ':') {
             $i = strpos($command, ' ');
             $this->source = substr($command, 1, $i - 1);
-            
+
             $i++;
         }
-        
+
         $j = strpos($command, ' ', $i);
         if ($j !== false) {
             $this->command = substr($command, $i, $j - $i);
         } else {
             $this->command = substr($command, $i);
+
             return;
         }
-        
+
         $i = strpos($command, ':', $j);
         if ($i !== false) {
             if ($i !== $j + 1) {

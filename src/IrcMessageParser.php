@@ -26,7 +26,7 @@ class IrcMessageParser
             if (empty(trim($msg))) {
                 continue;
             }
-            
+
             yield $this->parseSingle($msg);
         }
     }
@@ -73,9 +73,9 @@ class IrcMessageParser
 
         return $msg;
     }
-    
+
     /**
-     *  Get the COMMAND part of an irc message
+     *  Get the COMMAND part of an irc message.
      *
      *  @param string $message a raw irc message
      *
@@ -86,6 +86,7 @@ class IrcMessageParser
         if ($message[0] === ':') {
             $message = trim(strstr($message, ' '));
         }
+
         return strstr($message, ' ', true);
     }
 }

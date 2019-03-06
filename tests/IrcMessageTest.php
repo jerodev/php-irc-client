@@ -15,14 +15,14 @@ class IrcMessageTest extends TestCase
     public function testParseMultiple()
     {
         $msg = "PING :0123456\nPING :0123457";
-        $commands = iterator_to_array((new IrcMessageParser)->parse($msg));
-        
+        $commands = iterator_to_array((new IrcMessageParser())->parse($msg));
+
         $this->assertEquals([
             new PingMessage('PING :0123456'),
             new PingMessage('PING :0123457'),
         ], $commands);
     }
-    
+
     public function testParseMotd()
     {
         $msg = new MOTDMessage(':Jerodev!~Jerodev@foo.bar.be 372 IrcBot :Message of the day');
@@ -32,7 +32,7 @@ class IrcMessageTest extends TestCase
         $this->assertEquals('IrcBot', $this->getPrivate($msg, 'commandsuffix'));
         $this->assertEquals('Message of the day', $this->getPrivate($msg, 'payload'));
     }
-    
+
     public function testParseNameReply()
     {
         $msg = new NameReplyMessage(':Jerodev!~Jerodev@foo.bar.be 353 IrcBot = #channel :IrcBot @Q OtherUser');
