@@ -74,7 +74,7 @@ class IrcMessage
         }
         
         $j = strpos($command, ' ', $i);
-        if (is_numeric($j)) {
+        if ($j !== false) {
             $this->command = substr($command, $i, $j - $i);
         } else {
             $this->command = substr($command, $i);
@@ -82,7 +82,7 @@ class IrcMessage
         }
         
         $i = strpos($command, ':', $j);
-        if (is_numeric($i)) {
+        if ($i !== false) {
             if ($i !== $j + 1) {
                 $this->commandsuffix = substr($command, $j + 1, $i - $j - 2);
             }
