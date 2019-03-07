@@ -6,6 +6,7 @@ use Exception;
 use Jerodev\PhpIrcClient\Helpers\Event;
 use Jerodev\PhpIrcClient\Helpers\EventHandlerCollection;
 use Jerodev\PhpIrcClient\Messages\IrcMessage;
+use Jerodev\PhpIrcClient\Options\ConnectionOptions;
 use React\EventLoop\LoopInterface;
 use React\Socket\ConnectionInterface;
 
@@ -20,21 +21,41 @@ class IrcConnection
     /** @var EventHandlerCollection */
     private $eventHandlerCollection;
 
+    /** @var boolean */
+    private $floodProtected;
+
     /** @var LoopInterface */
     private $loop;
 
     /** @var IrcMessageParser */
     private $messageParser;
 
+    /** @var string[] */
+    private $messageQueue;
+
     /** @var string */
     private $server;
 
-    public function __construct(string $server)
+    public function __construct(string $server, ?ConnectionOptions $options = null)
     {
+        $options = $options ?? new ConnectionOptions();
+        $this->server = $server;
+
         $this->connected = false;
         $this->eventHandlerCollection = new EventHandlerCollection();
+        $this->floodProtected = $options->floodProtectionDelay > 0;
+        $this->loop = \React\EventLoop\Factory::create();
         $this->messageParser = new IrcMessageParser();
-        $this->server = $server;
+        $this->messageQueue = [];
+
+        if ($this->floodProtected) {
+            $this->loop->addPeriodicTimer($options->floodProtectionDelay / 1000, function () {
+                if ($msg = array_shift($this->messageQueue)) {
+                    $this->connection->write($msg);
+                    var_dump($msg);
+                }
+            });
+        }
     }
 
     /**
@@ -42,7 +63,6 @@ class IrcConnection
      */
     public function open()
     {
-        $this->loop = \React\EventLoop\Factory::create();
         $tcpConnector = new \React\Socket\TcpConnector($this->loop);
         $dnsResolverFactory = new \React\Dns\Resolver\Factory();
         $dns = $dnsResolverFactory->createCached('1.1.1.1', $this->loop);
@@ -117,7 +137,11 @@ class IrcConnection
             $command .= "\n";
         }
 
-        $this->connection->write($command);
+        if ($this->floodProtected) {
+            $this->messageQueue[] = $command;
+        } else {
+            $this->connection->write($command);
+        }
     }
 
     /**

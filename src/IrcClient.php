@@ -5,6 +5,7 @@ namespace Jerodev\PhpIrcClient;
 use Exception;
 use Jerodev\PhpIrcClient\Helpers\EventHandlerCollection;
 use Jerodev\PhpIrcClient\Messages\IrcMessage;
+use Jerodev\PhpIrcClient\Options\ClientOptions;
 
 class IrcClient
 {
@@ -27,23 +28,19 @@ class IrcClient
      *  Create a new IrcClient instance.
      *
      *  @param string $server The server address to connect to including the port: `address:port`.
-     *  @param null|string $nickname The username to use on the server. Can be set in more detail using `setUser()`.
-     *  @param null|string|string[] $channels The channels to join on connect.
+     *  @param ClientOptions $options An object depicting options for this connection.
      */
-    public function __construct(string $server, ?string $nickname = null, $channels = null)
+    public function __construct(string $server, ?ClientOptions $options = null)
     {
-        $this->connection = new IrcConnection($server);
+        $options = $options ?? new ClientOptions();
+        $this->connection = new IrcConnection($server, $options->connectionOptions());
 
-        $this->user = $nickname === null ? null : new IrcUser($nickname);
+        $this->user = $options->nickname === null ? null : new IrcUser($options->nickname);
         $this->channels = [];
         $this->messageEventHandlers = new EventHandlerCollection();
 
-        if (!empty($channels)) {
-            if (is_string($channels)) {
-                $channels = [$channels];
-            }
-
-            foreach ($channels as $channel) {
+        if (!empty($options->channels)) {
+            foreach ($options->channels as $channel) {
                 $this->channels[$channel] = new IrcChannel($channel);
             }
         }
