@@ -190,6 +190,7 @@ class IrcClient
      */
     private function handleIrcMessage(IrcMessage $message): void
     {
+        $message->injectChannel($this->channels);
         $message->handle($this);
 
         if (!$this->isAuthenticated && $this->user) {

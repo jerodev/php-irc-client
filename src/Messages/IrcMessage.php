@@ -3,6 +3,7 @@
 namespace Jerodev\PhpIrcClient\Messages;
 
 use Jerodev\PhpIrcClient\Helpers\Event;
+use Jerodev\PhpIrcClient\IrcChannel;
 use Jerodev\PhpIrcClient\IrcClient;
 
 class IrcMessage
@@ -53,6 +54,17 @@ class IrcMessage
     public function getEvents()
     {
         return [];
+    }
+
+    /**
+     *  Inject the list of irc channels.
+     *  The messages can use this to gather information of the channel if needed.
+     *
+     *  @param IrcChannel[] $channels The list of irc channels in the IrcClient.
+     */
+    public function injectChannel(array $channels): void
+    {
+        //
     }
 
     /**

@@ -21,7 +21,7 @@ class IrcConnection
     /** @var EventHandlerCollection */
     private $eventHandlerCollection;
 
-    /** @var boolean */
+    /** @var bool */
     private $floodProtected;
 
     /** @var LoopInterface */
@@ -52,7 +52,6 @@ class IrcConnection
             $this->loop->addPeriodicTimer($options->floodProtectionDelay / 1000, function () {
                 if ($msg = array_shift($this->messageQueue)) {
                     $this->connection->write($msg);
-                    var_dump($msg);
                 }
             });
         }

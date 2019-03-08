@@ -129,18 +129,18 @@ Emitted when the server sends a list of nicks for a channel. This happens immedi
 
 ### <a name="client-event-message"></a> Message received
 
-    $client->on('message', function (string $from, string $to, string $message) { });
+    $client->on('message', function (string $from, IrcChannel $channel, string $message) { });
 
-Emitted when a message is sent to the user or to a joined channel.
+Emitted when a message is sent to a connected channel.
 
 | Name | Type | Description
 | --- | --- | --- |
 | `$from` | *string* | The nickname of the user who sent the message.
-| `$to` | *string* | The channel where the message was sent, or the name of the client in case of a private message.
+| `$channel` | *IrcChannel* | The channel where the message was sent.
 | `$message` | *string* | The received message.
 
 > You can also specify the channel you want to listen on by adding `#channel` to the event.<br />
-> For example: `$client->on('message#channel', function ($from, $message) {})`
+> For example: `$client->on('message#channel', function ($from, $channel, $message) {})`
 
 ### <a name="client-event-ping"></a> Ping received
 
