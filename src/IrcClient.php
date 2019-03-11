@@ -125,7 +125,9 @@ class IrcClient
      */
     public function say(string $target, string $message): void
     {
-        $this->send("PRIVMSG $target :$message");
+        foreach (explode("\n", $message) as $msg) {
+            $this->send("PRIVMSG $target :" . trim($msg));
+        }
     }
 
     /**

@@ -60,4 +60,23 @@ class IrcClientResponseTest extends TestCase
 
         $client->say('#channel', 'Hello World!');
     }
+
+    /**
+     *  `sendMessage` should generate multiple PRIVMSG commands for multiline messages.
+     */
+    public function testSendMultilineMessage()
+    {
+        $client = $this->getMockBuilder(IrcClient::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['send'])
+            ->getMock();
+        $client->expects($this->exactly(2))
+            ->method('send')
+            ->withConsecutive(
+                ['PRIVMSG #channel :Hello'],
+                ['PRIVMSG #channel :World!']
+            );
+
+        $client->say('#channel', "Hello\nWorld!");
+    }
 }
