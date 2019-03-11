@@ -33,11 +33,11 @@ class PrivmsgMessage extends IrcMessage
         if ($this->target[0] === '#') {
             $events = [
                 new Event('message', [$this->user, $this->channel, $this->message]),
-                new Event("message$this->target", [$this->user, $this->channel, $this->message])
+                new Event("message$this->target", [$this->user, $this->channel, $this->message]),
             ];
         } else {
             $events = [
-                new Event('privmsg', [$this->user, $this->target, $this->message])
+                new Event('privmsg', [$this->user, $this->target, $this->message]),
             ];
         }
 
