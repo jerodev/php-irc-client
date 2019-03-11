@@ -2,6 +2,8 @@
 
 namespace Jerodev\PhpIrcClient;
 
+use Exception;
+
 class IrcChannel
 {
     /** @var string */
