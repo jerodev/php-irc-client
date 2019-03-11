@@ -4,6 +4,7 @@ namespace Tests;
 
 use Jerodev\PhpIrcClient\Helpers\Event;
 use Jerodev\PhpIrcClient\Helpers\EventHandlerCollection;
+use Jerodev\PhpIrcClient\IrcChannel;
 use Jerodev\PhpIrcClient\IrcClient;
 use Jerodev\PhpIrcClient\IrcConnection;
 use Jerodev\PhpIrcClient\IrcMessageParser;
@@ -33,7 +34,10 @@ class IrcMessageEventTest extends TestCase
     {
         $this->invokeClientEvents(
             ':Jerodev!~Jerodev@foo.bar.be PRIVMSG #channel :Hello World!',
-            [[new Event('message', ['Jerodev', '#channel', 'Hello World!'])], [new Event('message#channel', ['Jerodev', 'Hello World!'])]]
+            [
+                [new Event('message', ['Jerodev', new IrcChannel('#channel'), 'Hello World!'])],
+                [new Event('message#channel', ['Jerodev', new IrcChannel('#channel'), 'Hello World!'])],
+            ]
         );
     }
 
@@ -59,6 +63,7 @@ class IrcMessageEventTest extends TestCase
         $client = new IrcClient('');
         $this->setPrivate($client, 'messageEventHandlers', $eventCollection);
         $this->setPrivate($client, 'connection', $connection);
+        $this->setPrivate($client, 'channels', ['#channel' => new IrcChannel('#channel')]);
 
         foreach ((new IrcMessageParser())->parse($message) as $msg) {
             $this->callPrivate($client, 'handleIrcMessage', [$msg]);
