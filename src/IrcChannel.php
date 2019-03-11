@@ -15,6 +15,11 @@ class IrcChannel
 
     public function __construct(string $name)
     {
+        $name = trim($name);
+        if (empty($name)) {
+            throw new Exception('Channel name is empty.');
+        }
+
         if ($name[0] !== '#') {
             $name = "#$name";
         }
