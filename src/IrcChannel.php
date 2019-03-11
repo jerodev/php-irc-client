@@ -64,11 +64,18 @@ class IrcChannel
 
     /**
      *  Set the list of active users on the channel.
+     *  User modes (`+`, `@`) will be removed from the nicknames.
      *
      *  @param string[] $users An array of user names.
      */
     public function setUsers(array $users): void
     {
-        $this->users = $users;
+        $this->users = array_map(function ($user) {
+            if (in_array($user[0], ['+', '@'])) {
+                $user = substr($user, 1);
+            }
+
+            return $user;
+        }, $users);
     }
 }
