@@ -131,7 +131,6 @@ class IrcConnection
      */
     public function write(string $command): void
     {
-        var_dump("OUT: $command");
         if (!$this->isConnected()) {
             throw new Exception('No open connection was found to write commands to.');
         }
@@ -155,7 +154,6 @@ class IrcConnection
      */
     private function handleMessage(IrcMessage $message): void
     {
-        var_dump('IN:  ', $message);
         $this->eventHandlerCollection->invoke(new Event('data', [$message]));
     }
 }
