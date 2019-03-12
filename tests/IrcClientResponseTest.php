@@ -4,9 +4,35 @@ namespace Tests;
 
 use Jerodev\PhpIrcClient\IrcClient;
 use Jerodev\PhpIrcClient\IrcMessageParser;
+use Jerodev\PhpIrcClient\Options\ClientOptions;
 
 class IrcClientResponseTest extends TestCase
 {
+    /**
+     *  Test autojoining a channel after kick.
+     */
+    public function testAutoJoinAfterKick()
+    {
+        $options = new ClientOptions('PhpIrcBot', ['#php-irc-client-test']);
+        $options->autoRejoin = true;
+
+        $client = $this->getMockBuilder(IrcClient::class)
+            ->setConstructorArgs(['', $options])
+            ->setMethods(['send'])
+            ->getMock();
+        $client->expects($this->exactly(3))
+            ->method('send')
+            ->withConsecutive(
+                ['JOIN #php-irc-client-test'],
+                ['USER PhpIrcBot * * :PhpIrcBot'],
+                ['NICK PhpIrcBot']
+            );
+
+        foreach ((new IrcMessageParser())->parse('KICK #php-irc-client-test PhpIrcBot') as $msg) {
+            $this->callPrivate($client, 'handleIrcMessage', [$msg]);
+        }
+    }
+
     /**
      *  Test generating join/part commands.
      */
@@ -25,6 +51,27 @@ class IrcClientResponseTest extends TestCase
 
         $client->join('#php-irc-client-test');
         $client->part('#php-irc-client-test');
+    }
+
+    /**
+     *  If autojoin is off, the client should not auto rejoin after kick.
+     */
+    public function testNotAutoJoinAfterKick()
+    {
+        $client = $this->getMockBuilder(IrcClient::class)
+            ->setConstructorArgs(['', new ClientOptions('PhpIrcBot', ['#php-irc-client-test'])])
+            ->setMethods(['send'])
+            ->getMock();
+        $client->expects($this->exactly(2))
+            ->method('send')
+            ->withConsecutive(
+                ['USER PhpIrcBot * * :PhpIrcBot'],
+                ['NICK PhpIrcBot']
+            );
+
+        foreach ((new IrcMessageParser())->parse('KICK #php-irc-client-test PhpIrcBot') as $msg) {
+            $this->callPrivate($client, 'handleIrcMessage', [$msg]);
+        }
     }
 
     /**

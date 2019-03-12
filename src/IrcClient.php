@@ -21,6 +21,9 @@ class IrcClient
     /** @var EventHandlerCollection */
     private $messageEventHandlers;
 
+    /** @var ClientOptions */
+    private $options;
+
     /** @var IrcUser|null */
     private $user;
 
@@ -32,17 +35,21 @@ class IrcClient
      */
     public function __construct(string $server, ?ClientOptions $options = null)
     {
-        $options = $options ?? new ClientOptions();
-        $this->connection = new IrcConnection($server, $options->connectionOptions());
+        $this->options = $options ?? new ClientOptions();
+        $this->connection = new IrcConnection($server, $this->options->connectionOptions());
 
-        $this->user = $options->nickname === null ? null : new IrcUser($options->nickname);
+        $this->user = $this->options->nickname === null ? null : new IrcUser($this->options->nickname);
         $this->channels = [];
         $this->messageEventHandlers = new EventHandlerCollection();
 
-        if (!empty($options->channels)) {
-            foreach ($options->channels as $channel) {
+        if (!empty($this->options->channels)) {
+            foreach ($this->options->channels as $channel) {
                 $this->channels[$channel] = new IrcChannel($channel);
             }
+        }
+
+        if ($this->options->autoConnect) {
+            $this->connect();
         }
     }
 
@@ -176,6 +183,16 @@ class IrcClient
     }
 
     /**
+     *  Get the name with which the client is currently known on the server.
+     *
+     *  @var string
+     */
+    public function getNickname(): string
+    {
+        return $this->user->nickname;
+    }
+
+    /**
      *  Return a list of all channels.
      *
      *  @return IrcChannel[]
@@ -183,6 +200,16 @@ class IrcClient
     public function getChannels(): array
     {
         return $this->channels;
+    }
+
+    /**
+     *  Indicates whether the client should autorejoin channels when kicked.
+     *
+     *  @return bool
+     */
+    public function shouldAutoRejoin(): bool
+    {
+        return $this->options->autoRejoin;
     }
 
     /**

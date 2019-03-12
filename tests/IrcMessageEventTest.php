@@ -11,6 +11,11 @@ use Jerodev\PhpIrcClient\IrcMessageParser;
 
 class IrcMessageEventTest extends TestCase
 {
+    public function testKick()
+    {
+        $this->invokeClientEvents(':Jerodev!~Jerodev@foo.bar.be KICK #channel user :Get out!', [new Event('kick', [new IrcChannel('#channel'), 'user', 'Get out!'])]);
+    }
+
     public function testMOTD()
     {
         $this->invokeClientEvents(':Jerodev!~Jerodev@foo.bar.be 372 IrcBot :Message of the day', [new Event('motd', ['Message of the day'])]);
@@ -61,6 +66,7 @@ class IrcMessageEventTest extends TestCase
             ->getMock();
 
         $client = new IrcClient('');
+        $client->setUser('PhpIrcClient');
         $this->setPrivate($client, 'messageEventHandlers', $eventCollection);
         $this->setPrivate($client, 'connection', $connection);
         $this->setPrivate($client, 'channels', ['#channel' => new IrcChannel('#channel')]);

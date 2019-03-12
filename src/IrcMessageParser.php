@@ -4,6 +4,7 @@ namespace Jerodev\PhpIrcClient;
 
 use Generator;
 use Jerodev\PhpIrcClient\Messages\IrcMessage;
+use Jerodev\PhpIrcClient\Messages\KickMessage;
 use Jerodev\PhpIrcClient\Messages\MOTDMessage;
 use Jerodev\PhpIrcClient\Messages\NameReplyMessage;
 use Jerodev\PhpIrcClient\Messages\PingMessage;
@@ -41,6 +42,10 @@ class IrcMessageParser
     private function parseSingle(string $message): IrcMessage
     {
         switch ($this->getCommand($message)) {
+            case 'KICK':
+                $msg = new KickMessage($message);
+                break;
+
             case 'PING':
                 $msg = new PingMessage($message);
                 break;
