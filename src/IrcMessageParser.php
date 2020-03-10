@@ -39,7 +39,7 @@ class IrcMessageParser
      *
      *  @return IrcMessage
      */
-    private function parseSingle(string $message): IrcMessage
+    protected function parseSingle(string $message): IrcMessage
     {
         switch ($this->getCommand($message)) {
             case 'KICK':

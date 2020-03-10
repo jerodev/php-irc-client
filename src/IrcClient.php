@@ -33,10 +33,10 @@ class IrcClient
      *  @param string $server The server address to connect to including the port: `address:port`.
      *  @param ClientOptions $options An object depicting options for this connection.
      */
-    public function __construct(string $server, ?ClientOptions $options = null)
+    public function __construct(string $server, ?ClientOptions $options = null, IrcConnection $connection = null)
     {
         $this->options = $options ?? new ClientOptions();
-        $this->connection = new IrcConnection($server, $this->options->connectionOptions());
+        $this->connection = $connection ?? new IrcConnection($server, $this->options->connectionOptions());
 
         $this->user = $this->options->nickname === null ? null : new IrcUser($this->options->nickname);
         $this->channels = [];

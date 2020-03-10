@@ -36,7 +36,7 @@ class IrcConnection
     /** @var string */
     private $server;
 
-    public function __construct(string $server, ?ConnectionOptions $options = null)
+    public function __construct(string $server, ?ConnectionOptions $options = null, IrcMessageParser $parser = null)
     {
         $options = $options ?? new ConnectionOptions();
         $this->server = $server;
@@ -45,7 +45,7 @@ class IrcConnection
         $this->eventHandlerCollection = new EventHandlerCollection();
         $this->floodProtected = $options->floodProtectionDelay > 0;
         $this->loop = \React\EventLoop\Factory::create();
-        $this->messageParser = new IrcMessageParser();
+        $this->messageParser = $parser ?? new IrcMessageParser();
         $this->messageQueue = [];
 
         if ($this->floodProtected) {
