@@ -29,7 +29,6 @@ class IrcMessageParser
                 continue;
             }
 
-            echo $msg, PHP_EOL;
             yield $this->parseSingle($msg);
         }
     }
