@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests;
 
 use Jerodev\PhpIrcClient\IrcMessageParser;
@@ -12,7 +14,7 @@ use Jerodev\PhpIrcClient\Messages\TopicChangeMessage;
 
 class IrcMessageTest extends TestCase
 {
-    public function testParseMultiple()
+    public function testParseMultiple(): void
     {
         $msg = "PING :0123456\nPING :0123457";
         $commands = iterator_to_array((new IrcMessageParser())->parse($msg));
@@ -23,7 +25,7 @@ class IrcMessageTest extends TestCase
         ], $commands);
     }
 
-    public function testParseMotd()
+    public function testParseMotd(): void
     {
         $msg = new MOTDMessage(':Jerodev!~Jerodev@foo.bar.be 372 IrcBot :Message of the day');
 
@@ -33,7 +35,7 @@ class IrcMessageTest extends TestCase
         $this->assertEquals('Message of the day', $this->getPrivate($msg, 'payload'));
     }
 
-    public function testParseNameReply()
+    public function testParseNameReply(): void
     {
         $msg = new NameReplyMessage(':Jerodev!~Jerodev@foo.bar.be 353 IrcBot = #channel :IrcBot @Q OtherUser');
 
@@ -45,7 +47,7 @@ class IrcMessageTest extends TestCase
         $this->assertEquals(['IrcBot', '@Q', 'OtherUser'], $msg->names);
     }
 
-    public function testParseTopicReply()
+    public function testParseTopicReply(): void
     {
         $msg = new IrcMessage(':Jerodev!~Jerodev@foo.bar.be TOPIC #channel :The newest channel topic!');
 
@@ -55,7 +57,7 @@ class IrcMessageTest extends TestCase
         $this->assertEquals('The newest channel topic!', $this->getPrivate($msg, 'payload'));
     }
 
-    public function testParseTopicReplyNumeric()
+    public function testParseTopicReplyNumeric(): void
     {
         $msg = new TopicChangeMessage(':Jerodev!~Jerodev@foo.bar.be 332 BotName #channel :The newest channel topic!!');
 
@@ -65,7 +67,7 @@ class IrcMessageTest extends TestCase
         $this->assertEquals('The newest channel topic!!', $msg->topic);
     }
 
-    public function testParseUserMessage()
+    public function testParseUserMessage(): void
     {
         $msg = new PrivmsgMessage(':Jerodev!~Jerodev@foo.bar.be PRIVMSG #channel :Hello World!');
 

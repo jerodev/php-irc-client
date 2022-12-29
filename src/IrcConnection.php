@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jerodev\PhpIrcClient;
 
 use Exception;
@@ -12,41 +14,26 @@ use React\Socket\ConnectionInterface;
 
 class IrcConnection
 {
-    /** @var bool */
-    private $connected;
+    private bool $connected = false;
+    private ?ConnectionInterface $connection = null;
+    private EventHandlerCollection $eventHandlerCollection;
+    private bool $floodProtected;
+    private LoopInterface $loop;
+    private IrcMessageParser $messageParser;
 
-    /** @var ConnectionInterface|null */
-    private $connection;
+    /** @var array<int, string> */
+    private array $messageQueue = [];
 
-    /** @var EventHandlerCollection */
-    private $eventHandlerCollection;
-
-    /** @var bool */
-    private $floodProtected;
-
-    /** @var LoopInterface */
-    private $loop;
-
-    /** @var IrcMessageParser */
-    private $messageParser;
-
-    /** @var string[] */
-    private $messageQueue;
-
-    /** @var string */
-    private $server;
-
-    public function __construct(string $server, ?ConnectionOptions $options = null)
-    {
+    public function __construct(
+        private string $server,
+        ?ConnectionOptions $options = null
+    ) {
         $options = $options ?? new ConnectionOptions();
-        $this->server = $server;
 
-        $this->connected = false;
         $this->eventHandlerCollection = new EventHandlerCollection();
         $this->floodProtected = $options->floodProtectionDelay > 0;
         $this->loop = \React\EventLoop\Factory::create();
         $this->messageParser = new IrcMessageParser();
-        $this->messageQueue = [];
 
         if ($this->floodProtected) {
             $this->loop->addPeriodicTimer($options->floodProtectionDelay / 1000, function () {
@@ -58,9 +45,9 @@ class IrcConnection
     }
 
     /**
-     *  Open a connection to the irc server.
+     * Open a connection to the IRC server.
      */
-    public function open()
+    public function open(): void
     {
         if ($this->isConnected()) {
             return;
@@ -93,7 +80,7 @@ class IrcConnection
     }
 
     /**
-     *  Close the current irc server connection.
+     * Close the current IRC server connection.
      */
     public function close(): void
     {
@@ -104,7 +91,7 @@ class IrcConnection
     }
 
     /**
-     *  Test if there is an open connection to the irc server.
+     * Test if there is an open connection to the IRC server.
      */
     public function isConnected(): bool
     {
@@ -112,10 +99,9 @@ class IrcConnection
     }
 
     /**
-     *  Set a callback for received irc data
-     *  An IrcMessage object will be passed to the callback.
-     *
-     *  @param callable $function The function to be called.
+     * Set a callback for received IRC data.
+     * An IrcMessage object will be passed to the callback.
+     * @param callable $function The function to be called.
      */
     public function onData(callable $function): void
     {
@@ -123,11 +109,9 @@ class IrcConnection
     }
 
     /**
-     * Send a command to the irc server.
-     *
-     *  @param string $command The raw irc command.
-     *
-     *  @throws Exception if no open connection is available.
+     * Send a command to the IRC server.
+     * @param string $command The raw IRC command.
+     * @throws Exception if no open connection is available.
      */
     public function write(string $command): void
     {
@@ -148,9 +132,7 @@ class IrcConnection
     }
 
     /**
-     *  Handle a single parsed IrcMessage.
-     *
-     *  @param IrcMessage $message The message received from the server.
+     * Handle a single parsed IrcMessage.
      */
     private function handleMessage(IrcMessage $message): void
     {

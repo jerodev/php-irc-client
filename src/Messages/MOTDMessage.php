@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jerodev\PhpIrcClient\Messages;
 
 use Jerodev\PhpIrcClient\Helpers\Event;
@@ -11,6 +13,9 @@ class MOTDMessage extends IrcMessage
         parent::__construct($message);
     }
 
+    /**
+     * @return array<int, Event>
+     */
     public function getEvents(): array
     {
         return [

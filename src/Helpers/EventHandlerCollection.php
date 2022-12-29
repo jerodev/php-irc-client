@@ -1,25 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jerodev\PhpIrcClient\Helpers;
 
 class EventHandlerCollection
 {
-    /** @var callable[][] */
-    private $eventHandlers;
+    /** @var array<string, array<int, callable>> */
+    private array $eventHandlers = [];
 
     public function __construct()
     {
-        $this->eventHandlers = [];
     }
 
     /**
-     *  Register an event handler.
+     * Register an event handler.
      *
-     *  @param callable|string $event The name of the event to listen for. Pass a callable to this parameter to catch all events.
-     *  @param callable|null $function The callable that will be invoked on event
+     * @param callable|string $event The name of the event to listen for. Pass a callable to this parameter to catch all events.
+     * @param callable|null $function The callable that will be invoked on event
      */
-    public function addHandler($event, ?callable $function): void
-    {
+    public function addHandler(
+        callable | string $event,
+        ?callable $function
+    ): void {
         if (is_callable($event)) {
             $function = $event;
             $event = '*';
@@ -34,12 +37,13 @@ class EventHandlerCollection
 
     /**
      *  Invoke all handlers for a specific event.
-     *
-     *  @param Event $event
      */
     public function invoke(Event $event): void
     {
-        $handlers = array_merge($this->eventHandlers['*'] ?? [], $this->eventHandlers[$event->getEvent()] ?? []);
+        $handlers = array_merge(
+            $this->eventHandlers['*'] ?? [],
+            $this->eventHandlers[$event->getEvent()] ?? []
+        );
         foreach ($handlers as $handler) {
             $handler(...$event->getArguments());
         }

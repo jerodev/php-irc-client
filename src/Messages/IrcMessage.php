@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jerodev\PhpIrcClient\Messages;
 
 use Jerodev\PhpIrcClient\Helpers\Event;
@@ -8,36 +10,23 @@ use Jerodev\PhpIrcClient\IrcClient;
 
 class IrcMessage
 {
-    /** @var string */
-    private $rawMessage;
-
-    /** @var string */
-    protected $command;
-
-    /** @var string */
-    protected $commandsuffix;
-
-    /** @var bool */
-    protected $handled;
-
-    /** @var string */
-    protected $payload;
-
-    /** @var string */
-    protected $source;
+    protected string $command;
+    protected string $commandsuffix;
+    protected bool $handled = false;
+    protected string $payload = '';
+    protected string $source;
 
     public function __construct(string $command)
     {
-        $this->handled = false;
         $this->parse($command);
     }
 
     /**
-     *  This function is always called after the message is parsed.
-     *  The handle will only be executed once unless forced.
+     * This function is always called after the message is parsed.
+     * The handle will only be executed once unless forced.
      *
-     *  @param IrcClient $client A reference to the irc client object
-     *  @param bool $force Force handling this message even if already handled.
+     * @param IrcClient $client A reference to the irc client object
+     * @param bool $force Force handling this message even if already handled.
      */
     public function handle(IrcClient $client, bool $force = false): void
     {
@@ -47,35 +36,29 @@ class IrcMessage
     }
 
     /**
-     *  Get the events that should be invoked for this message.
-     *
-     *  @return Event[]
+     * Get the events that should be invoked for this message.
+     * @return array<int, Event>
      */
-    public function getEvents()
+    public function getEvents(): array
     {
         return [];
     }
 
     /**
-     *  Inject the list of irc channels.
-     *  The messages can use this to gather information of the channel if needed.
-     *
-     *  @param IrcChannel[] $channels The list of irc channels in the IrcClient.
+     * Inject the list of IRC channels.
+     * The messages can use this to gather information of the channel if needed.
+     * @param array<string, IrcChannel> $channels
      */
     public function injectChannel(array $channels): void
     {
-        //
     }
 
     /**
-     *  Parse the irc command string to local properties.
-     *
-     *  @param string $command
+     * Parse the IRC command string to local properties.
      */
     private function parse(string $command): void
     {
         $command = trim($command);
-        $this->rawMessage = $command;
         $i = 0;
 
         if ($command[0] === ':') {

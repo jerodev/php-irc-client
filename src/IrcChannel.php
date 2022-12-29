@@ -1,38 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jerodev\PhpIrcClient;
 
 use Exception;
 
 class IrcChannel
 {
-    /** @var string */
-    private $name;
+    private string $name;
+    private ?string $topic;
 
-    /** @var null|string */
-    private $topic;
-
-    /** @var string[] */
-    private $users;
+    /** @var array<int, string> */
+    private array $users = [];
 
     public function __construct(string $name)
     {
         $name = trim($name);
-        if (empty($name)) {
+        if ('' === $name || '#' === $name) {
             throw new Exception('Channel name is empty.');
         }
 
-        if ($name[0] !== '#') {
-            $name = "#$name";
-        }
         $this->name = $name;
-        $this->users = [];
+        if ($this->name[0] !== '#') {
+            $this->name = '#' . $this->name;
+        }
     }
 
     /**
-     *  Fetch the name of the channel, including the `#`.
-     *
-     *  @return string
+     * Fetch the name of the channel, including the `#`.
      */
     public function getName(): string
     {
@@ -40,19 +36,16 @@ class IrcChannel
     }
 
     /**
-     *  Get the current channel topic.
-     *
-     *  @return null|string
+     * Get the current channel topic.
      */
-    public function getTopic()
+    public function getTopic(): ?string
     {
         return $this->topic;
     }
 
     /**
-     *  Fetch the list of users currently on this channel.
-     *
-     *  @return string[]
+     * Fetch the list of users currently on this channel.
+     * @return array<int, string>
      */
     public function getUsers(): array
     {
@@ -60,9 +53,8 @@ class IrcChannel
     }
 
     /**
-     *  Set the current channel topic.
-     *
-     *  @param string $topic The topic
+     * Set the current channel topic.
+     * @param string $topic The topic
      */
     public function setTopic(string $topic): void
     {
@@ -70,14 +62,13 @@ class IrcChannel
     }
 
     /**
-     *  Set the list of active users on the channel.
-     *  User modes (`+`, `@`) will be removed from the nicknames.
-     *
-     *  @param string[] $users An array of user names.
+     * Set the list of active users on the channel.
+     * User modes (`+`, `@`) will be removed from the nicknames.
+     * @param array<int, string> $users An array of user names.
      */
     public function setUsers(array $users): void
     {
-        $this->users = array_map(function ($user) {
+        $this->users = array_map(function ($user): string {
             if (in_array($user[0], ['+', '@'])) {
                 $user = substr($user, 1);
             }
