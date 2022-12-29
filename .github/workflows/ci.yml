@@ -4,7 +4,7 @@ on:
     paths-ignore:
       - '**/*.md'
 jobs:
-  Test-Service:
+  Coverage:
     runs-on: ubuntu-latest
     strategy:
       matrix:
