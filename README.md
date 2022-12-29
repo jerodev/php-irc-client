@@ -3,8 +3,6 @@
 
 A pure PHP IRC client based on [ReactPHP](https://reactphp.org/).
 
-> :wrench: This project is under development and will probably not work in its current state.
-
 ## Documentation
 
   - [Client](#client)
