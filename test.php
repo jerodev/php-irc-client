@@ -23,6 +23,46 @@ $autojoinChannels = [];
 $options = new ClientOptions(nickname: $nickname, channels: $autojoinChannels);
 $client = new IrcClient(\sprintf('%s:%s', $server, $port), $options);
 
+$signal_handler = function (int $signo, mixed $siginfo) use ($client, $server): void {
+    if (SIGHUP === $signo) {
+        echo 'Caught signal to re-read config', PHP_EOL;
+        return;
+    }
+
+    if (SIGTSTP === $signo) {
+        echo 'Caught sleep signal', PHP_EOL;
+
+        // Restore original handler.
+        pcntl_signal(SIGTSTP, SIG_DFL);
+        posix_kill(posix_getpid(), SIGTSTP);
+        return;
+    }
+
+    if (SIGCONT === $signo) {
+        echo 'Caught continue signal', PHP_EOL;
+        return;
+    }
+
+    if (SIGINT !== $signo && SIGTERM !== $signo) {
+        echo 'Caught unknown signal (', $signo, ')', PHP_EOL;
+        return;
+    }
+
+    // Handle shutdown tasks.
+    echo 'Disconnecting from ', $server, PHP_EOL;
+    foreach ($client->getChannels() as $name => $channel) {
+        $client->part($name);
+    }
+    $client->disconnect();
+    exit();
+};
+
+pcntl_signal(SIGHUP, $signal_handler); // kill -HUP <pid>
+pcntl_signal(SIGINT, $signal_handler); // CTRL-C
+pcntl_signal(SIGTERM, $signal_handler); // kill <pid>
+pcntl_signal(SIGTSTP, $signal_handler); // CTRL-Z
+pcntl_signal(SIGCONT, $signal_handler); // fg after a CTRL-Z
+
 $client->on('registered', function () use ($server, $port) {
     echo \sprintf('Connected to %s, port %s', $server, $port), PHP_EOL;
 });
