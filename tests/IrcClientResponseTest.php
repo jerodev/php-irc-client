@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests;
 
 use Jerodev\PhpIrcClient\IrcClient;
@@ -9,9 +11,9 @@ use Jerodev\PhpIrcClient\Options\ClientOptions;
 class IrcClientResponseTest extends TestCase
 {
     /**
-     *  Test autojoining a channel after kick.
+     * Test autojoining a channel after kick.
      */
-    public function testAutoJoinAfterKick()
+    public function testAutoJoinAfterKick(): void
     {
         $options = new ClientOptions('PhpIrcBot', ['#php-irc-client-test']);
         $options->autoRejoin = true;
@@ -34,9 +36,9 @@ class IrcClientResponseTest extends TestCase
     }
 
     /**
-     *  Test generating join/part commands.
+     * Test generating join/part commands.
      */
-    public function testJoinPartChannel()
+    public function testJoinPartChannel(): void
     {
         $client = $this->getMockBuilder(IrcClient::class)
             ->setConstructorArgs([''])
@@ -54,9 +56,9 @@ class IrcClientResponseTest extends TestCase
     }
 
     /**
-     *  If autojoin is off, the client should not auto rejoin after kick.
+     * If autojoin is off, the client should not auto rejoin after kick.
      */
-    public function testNotAutoJoinAfterKick()
+    public function testNotAutoJoinAfterKick(): void
     {
         $client = $this->getMockBuilder(IrcClient::class)
             ->setConstructorArgs(['', new ClientOptions('PhpIrcBot', ['#php-irc-client-test'])])
@@ -75,9 +77,9 @@ class IrcClientResponseTest extends TestCase
     }
 
     /**
-     *  Make sure the client returns a PING request with an equal PONG response.
+     * Make sure the client returns a PING request with an equal PONG response.
      */
-    public function testPingPong()
+    public function testPingPong(): void
     {
         $client = $this->getMockBuilder(IrcClient::class)
             ->setConstructorArgs([''])
@@ -93,9 +95,9 @@ class IrcClientResponseTest extends TestCase
     }
 
     /**
-     *  `sendMessage` should generate a PRIVMSG command.
+     * `sendMessage` should generate a PRIVMSG command.
      */
-    public function testSendMessage()
+    public function testSendMessage(): void
     {
         $client = $this->getMockBuilder(IrcClient::class)
             ->disableOriginalConstructor()
@@ -109,9 +111,10 @@ class IrcClientResponseTest extends TestCase
     }
 
     /**
-     *  `sendMessage` should generate multiple PRIVMSG commands for multiline messages.
+     * `sendMessage` should generate multiple PRIVMSG commands for multiline
+     * messages.
      */
-    public function testSendMultilineMessage()
+    public function testSendMultilineMessage(): void
     {
         $client = $this->getMockBuilder(IrcClient::class)
             ->disableOriginalConstructor()

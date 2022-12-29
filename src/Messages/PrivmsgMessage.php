@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jerodev\PhpIrcClient\Messages;
 
 use Jerodev\PhpIrcClient\Helpers\Event;
@@ -7,17 +9,10 @@ use Jerodev\PhpIrcClient\IrcChannel;
 
 class PrivmsgMessage extends IrcMessage
 {
-    /** @var IrcChannel */
-    public $channel;
-
-    /** @var string */
-    public $message;
-
-    /** @var string */
-    public $target;
-
-    /** @var string */
-    public $user;
+    public IrcChannel $channel;
+    public string $message;
+    public string $target;
+    public string $user;
 
     public function __construct(string $message)
     {
@@ -27,23 +22,25 @@ class PrivmsgMessage extends IrcMessage
         $this->message = $this->payload;
     }
 
+    /**
+     * @return array<int, Event>
+     */
     public function getEvents(): array
     {
-        $events = [];
         if ($this->target[0] === '#') {
-            $events = [
+            return [
                 new Event('message', [$this->user, $this->channel, $this->message]),
                 new Event("message$this->target", [$this->user, $this->channel, $this->message]),
             ];
-        } else {
-            $events = [
-                new Event('privmsg', [$this->user, $this->target, $this->message]),
-            ];
         }
-
-        return $events;
+        return [
+            new Event('privmsg', [$this->user, $this->target, $this->message]),
+        ];
     }
 
+    /**
+     * @param array<string, IrcChannel> $channels
+     */
     public function injectChannel(array $channels): void
     {
         if (array_key_exists($this->target, $channels)) {

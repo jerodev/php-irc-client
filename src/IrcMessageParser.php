@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jerodev\PhpIrcClient;
 
 use Generator;
@@ -15,78 +17,53 @@ use Jerodev\PhpIrcClient\Messages\WelcomeMessage;
 class IrcMessageParser
 {
     /**
-     *  Parse one ore more irc messages.
+     * Parse one or more IRC messages.
      *
-     *  @param string $message A string received from the irc server
-     *
-     *  @return Generator|IrcMessage[]
+     * @param string $message A string received from the IRC server
+     * @return Generator|IrcMessage[]
      */
     public function parse(string $message)
     {
         foreach (explode("\n", $message) as $msg) {
-            if (empty(trim($msg))) {
+            if ('' === trim($msg)) {
                 continue;
             }
 
+            echo $msg, PHP_EOL;
             yield $this->parseSingle($msg);
         }
     }
 
     /**
-     *  Parse a single message to a corresponding object.
-     *
-     *  @param string $message
-     *
-     *  @return IrcMessage
+     * Parse a single message to a corresponding object.
      */
     private function parseSingle(string $message): IrcMessage
     {
         switch ($this->getCommand($message)) {
             case 'KICK':
-                $msg = new KickMessage($message);
-                break;
-
+                return new KickMessage($message);
             case 'PING':
-                $msg = new PingMessage($message);
-                break;
-
+                return new PingMessage($message);
             case 'PRIVMSG':
-                $msg = new PrivmsgMessage($message);
-                break;
-
+                return new PrivmsgMessage($message);
             case IrcCommand::RPL_WELCOME:
-                $msg = new WelcomeMessage($message);
-                break;
-
+                return new WelcomeMessage($message);
             case 'TOPIC':
             case IrcCommand::RPL_TOPIC:
-                $msg = new TopicChangeMessage($message);
-                break;
-
+                return new TopicChangeMessage($message);
             case IrcCommand::RPL_NAMREPLY:
-                $msg = new NameReplyMessage($message);
-                break;
-
+                return new NameReplyMessage($message);
             case IrcCommand::RPL_MOTD:
-                $msg = new MOTDMessage($message);
-                break;
-
+                return new MOTDMessage($message);
             default:
-                $msg = new IrcMessage($message);
-                break;
+                return new IrcMessage($message);
         }
-
-        return $msg;
     }
 
     /**
-     *  Get the COMMAND part of an irc message.
-     *
-     *  @param string $message a raw irc message
-     *
-     *  @return string
+     * Get the COMMAND part of an IRC message.
      */
-    private function getCommand(string $message): string
+    private function getCommand(string $message): bool | string
     {
         if ($message[0] === ':') {
             $message = trim(strstr($message, ' '));

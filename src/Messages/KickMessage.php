@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jerodev\PhpIrcClient\Messages;
 
 use Jerodev\PhpIrcClient\Helpers\Event;
@@ -8,17 +10,10 @@ use Jerodev\PhpIrcClient\IrcClient;
 
 class KickMessage extends IrcMessage
 {
-    /** @var IrcChannel */
-    public $channel;
-
-    /** @var string */
-    public $message;
-
-    /** @var string */
-    private $target;
-
-    /** @var string */
-    public $user;
+    public IrcChannel $channel;
+    public string $message;
+    private string $target;
+    public string $user;
 
     public function __construct(string $message)
     {
@@ -29,7 +24,7 @@ class KickMessage extends IrcMessage
     }
 
     /**
-     *  When the bot is kicked form a channel, it might need to auto rejoin.
+     * When the bot is kicked form a channel, it might need to auto-rejoin.
      */
     public function handle(IrcClient $client, bool $force = false): void
     {
@@ -42,6 +37,9 @@ class KickMessage extends IrcMessage
         }
     }
 
+    /**
+     * @return array<int, Event>
+     */
     public function getEvents(): array
     {
         return [
@@ -49,6 +47,9 @@ class KickMessage extends IrcMessage
         ];
     }
 
+    /**
+     * @param array<string, IrcChannel> $channels
+     */
     public function injectChannel(array $channels): void
     {
         if (array_key_exists($this->target, $channels)) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jerodev\PhpIrcClient\Messages;
 
 use Jerodev\PhpIrcClient\Helpers\Event;
@@ -7,11 +9,10 @@ use Jerodev\PhpIrcClient\IrcClient;
 
 class NameReplyMessage extends IrcMessage
 {
-    /** @var string */
-    public $channel;
+    public string $channel;
 
-    /** @var string[] */
-    public $names;
+    /** @var array<int, string> */
+    public array $names;
 
     public function __construct(string $message)
     {
@@ -32,6 +33,9 @@ class NameReplyMessage extends IrcMessage
         }
     }
 
+    /**
+     * @return array<int, Event>
+     */
     public function getEvents(): array
     {
         return [

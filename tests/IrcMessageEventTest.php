@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests;
 
 use Jerodev\PhpIrcClient\Helpers\Event;
@@ -11,31 +13,43 @@ use Jerodev\PhpIrcClient\IrcMessageParser;
 
 class IrcMessageEventTest extends TestCase
 {
-    public function testKick()
-    {
-        $this->invokeClientEvents(':Jerodev!~Jerodev@foo.bar.be KICK #channel user :Get out!', [new Event('kick', [new IrcChannel('#channel'), 'user', 'Get out!'])]);
-    }
-
-    public function testMOTD()
-    {
-        $this->invokeClientEvents(':Jerodev!~Jerodev@foo.bar.be 372 IrcBot :Message of the day', [new Event('motd', ['Message of the day'])]);
-    }
-
-    public function testNamesEvent()
+    public function testKick(): void
     {
         $this->invokeClientEvents(
-            ':Jerodev!~Jerodev@foo.bar.be 353 IrcBot = #channel :IrcBot @Q OtherUser',
-            [[new Event('names', ['#channel', ['IrcBot', '@Q', 'OtherUser']])], [new Event('names#channel', [['IrcBot', '@Q', 'OtherUser']])]]
+            ':Jerodev!~Jerodev@foo.bar.be KICK #channel user :Get out!',
+            [[new Event('kick', [new IrcChannel('#channel'), 'user', 'Get out!'])]]
         );
     }
 
-    public function testPingEvent()
+    public function testMOTD(): void
     {
-        $this->invokeClientEvents('PING :0123456', [new Event('ping')]);
-        $this->invokeClientEvents("PING :0123456\nPING :0123457", [[new Event('ping')], [new Event('ping')]]);
+        $this->invokeClientEvents(
+            ':Jerodev!~Jerodev@foo.bar.be 372 IrcBot :Message of the day',
+            [[new Event('motd', ['Message of the day'])]]
+        );
     }
 
-    public function testPrivmsgEvent()
+    public function testNamesEvent(): void
+    {
+        $this->invokeClientEvents(
+            ':Jerodev!~Jerodev@foo.bar.be 353 IrcBot = #channel :IrcBot @Q OtherUser',
+            [
+                [new Event('names', ['#channel', ['IrcBot', '@Q', 'OtherUser']])],
+                [new Event('names#channel', [['IrcBot', '@Q', 'OtherUser']])],
+            ]
+        );
+    }
+
+    public function testPingEvent(): void
+    {
+        $this->invokeClientEvents('PING :0123456', [[new Event('ping')]]);
+        $this->invokeClientEvents(
+            "PING :0123456\nPING :0123457",
+            [[new Event('ping')], [new Event('ping')]]
+        );
+    }
+
+    public function testPrivmsgEvent(): void
     {
         $this->invokeClientEvents(
             ':Jerodev!~Jerodev@foo.bar.be PRIVMSG #channel :Hello World!',
@@ -46,9 +60,12 @@ class IrcMessageEventTest extends TestCase
         );
     }
 
-    public function testTopicChangeEvent()
+    public function testTopicChangeEvent(): void
     {
-        $this->invokeClientEvents(':Jerodev!~Jerodev@foo.bar.be TOPIC #channel :My Topic', [new Event('topic', ['#channel', 'My Topic'])]);
+        $this->invokeClientEvents(
+            ':Jerodev!~Jerodev@foo.bar.be TOPIC #channel :My Topic',
+            [[new Event('topic', ['#channel', 'My Topic'])]]
+        );
     }
 
     private function invokeClientEvents(string $message, array $expectedEvents): void

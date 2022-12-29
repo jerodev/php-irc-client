@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jerodev\PhpIrcClient\Messages;
 
 use Jerodev\PhpIrcClient\Helpers\Event;
@@ -13,7 +15,7 @@ class WelcomeMessage extends IrcMessage
     }
 
     /**
-     *  On welcome message, join the selected channels.
+     * On welcome message, join the selected channels.
      */
     public function handle(IrcClient $client, bool $force = false): void
     {
@@ -26,6 +28,9 @@ class WelcomeMessage extends IrcMessage
         }
     }
 
+    /**
+     * @return array<int, Event>
+     */
     public function getEvents(): array
     {
         return [

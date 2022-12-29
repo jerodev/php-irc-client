@@ -1,14 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jerodev\PhpIrcClient\Options;
 
 class ConnectionOptions
 {
-    /** @var int */
-    public $floodProtectionDelay;
-
-    public function __construct()
+    public function __construct(public int $floodProtectionDelay = 0)
     {
-        $this->floodProtectionDelay = 0;
     }
 }
