@@ -138,4 +138,9 @@ class IrcConnection
     {
         $this->eventHandlerCollection->invoke(new Event('data', [$message]));
     }
+
+    public function getServer(): string
+    {
+        return $this->server;
+    }
 }
