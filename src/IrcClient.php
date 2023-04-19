@@ -223,4 +223,9 @@ class IrcClient
 
         return $channel;
     }
+
+    public function getConnection(): IrcConnection
+    {
+        return $this->connection;
+    }
 }
