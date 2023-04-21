@@ -25,10 +25,12 @@
     },
     "scripts": {
         "all": [
+            "@lint",
             "@phpstan",
             "@coverage"
         ],
         "coverage": "phpunit --coverage-html=vendor/coverage",
+        "lint": "parallel-lint --colors src tests",
         "phpstan": "phpstan analyse src tests --level=5",
         "test": "phpunit"
     },
@@ -36,6 +38,7 @@
         "react/socket": "^1.12.0"
     },
     "require-dev": {
+        "php-parallel-lint/php-parallel-lint": "^1.3",
         "phpstan/phpstan": "^1.9",
         "phpstan/phpstan-phpunit": "^1.3.3",
         "phpunit/phpunit": "^9.0"
