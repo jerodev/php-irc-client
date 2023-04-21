@@ -24,4 +24,4 @@ jobs:
         run: composer install --no-progress --no-interaction
 
       - name: "Check syntax (php-parallel-lint)"
-        run: vendor/bin/parallel-lint app config data tests
+        run: vendor/bin/parallel-lint src tests
