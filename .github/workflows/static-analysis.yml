@@ -1,0 +1,27 @@
+name: PHP Static Analysis
+
+on: pull_request
+
+jobs:
+  lint:
+    runs-on: "ubuntu-latest"
+    strategy:
+      matrix:
+        php-version:
+          - 8.2
+    steps:
+      - name: "Checkout repository"
+        uses: "actions/checkout@v3"
+
+      - name: "Install PHP w/ Extensions"
+        uses: shivammathur/setup-php@master
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: none
+          extensions: "json, mbstring, mongodb, pdo"
+
+      - name: "Install Composer dependencies"
+        run: composer install --no-progress --no-interaction
+
+      - name: "Check syntax (php-parallel-lint)"
+        run: vendor/bin/parallel-lint src tests
