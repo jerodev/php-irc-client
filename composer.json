@@ -12,7 +12,11 @@
     "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
-            "Jerodev\\PhpIrcClient\\": "src/",
+            "Jerodev\\PhpIrcClient\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "Tests\\": "tests/"
         }
     },
@@ -20,6 +24,10 @@
         "sort-packages": true
     },
     "scripts": {
+        "all": [
+            "@phpstan",
+            "@coverage"
+        ],
         "coverage": "phpunit --coverage-html=vendor/coverage",
         "phpstan": "phpstan analyse src tests --level=5",
         "test": "phpunit"
