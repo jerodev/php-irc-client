@@ -11,12 +11,11 @@ class TopicChangeMessage extends IrcMessage
 {
     public string $channel;
     public string $topic;
-    public string $user;
 
     public function __construct(string $message)
     {
         parent::__construct($message);
-        $this->channel = strstr($this->commandsuffix, '#');
+        $this->channel = strstr($this->commandsuffix ?? '', '#');
         $this->topic = $this->payload;
     }
 

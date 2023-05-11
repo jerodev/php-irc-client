@@ -9,10 +9,6 @@ class EventHandlerCollection
     /** @var array<string, array<int, callable>> */
     private array $eventHandlers = [];
 
-    public function __construct()
-    {
-    }
-
     /**
      * Register an event handler.
      *
@@ -32,6 +28,7 @@ class EventHandlerCollection
             $this->eventHandlers[$event] = [];
         }
 
+        /** @psalm-suppress InvalidPropertyAssignmentValue */
         $this->eventHandlers[$event][] = $function;
     }
 
