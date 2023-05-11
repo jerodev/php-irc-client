@@ -10,7 +10,7 @@ use Jerodev\PhpIrcClient\IrcClient;
 
 class KickMessage extends IrcMessage
 {
-    public IrcChannel $channel;
+    public ?IrcChannel $channel = null;
     public string $message;
     private string $target;
     public string $user;
@@ -19,7 +19,7 @@ class KickMessage extends IrcMessage
     {
         parent::__construct($message);
 
-        [$this->target, $this->user] = explode(' ', $this->commandsuffix);
+        [$this->target, $this->user] = explode(' ', $this->commandsuffix ?? '');
         $this->message = $this->payload;
     }
 

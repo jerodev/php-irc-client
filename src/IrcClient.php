@@ -17,7 +17,7 @@ class IrcClient
     private bool $isAuthenticated = false;
     private EventHandlerCollection $messageEventHandlers;
     private ClientOptions $options;
-    private ?IrcUser $user;
+    private ?IrcUser $user = null;
 
     /**
      * Create a new IrcClient instance.
@@ -30,7 +30,9 @@ class IrcClient
         $this->options = $options ?? new ClientOptions();
         $this->connection = new IrcConnection($server, $this->options->connectionOptions());
 
-        $this->user = $this->options->nickname === null ? null : new IrcUser($this->options->nickname);
+        if (null !== $this->options->nickname) {
+            $this->user = new IrcUser($this->options->nickname);
+        }
         $this->messageEventHandlers = new EventHandlerCollection();
 
         if (!empty($this->options->channels)) {
@@ -169,8 +171,11 @@ class IrcClient
     /**
      * Get the name with which the client is currently known on the server.
      */
-    public function getNickname(): string
+    public function getNickname(): ?string
     {
+        if (null === $this->user) {
+            return null;
+        }
         return $this->user->nickname;
     }
 
@@ -201,7 +206,7 @@ class IrcClient
         $message->injectChannel($this->channels);
         $message->handle($this);
 
-        if (!$this->isAuthenticated && $this->user) {
+        if (!$this->isAuthenticated && null !== $this->user) {
             $this->send("USER {$this->user->nickname} * * :{$this->user->nickname}");
             $this->send("NICK {$this->user->nickname}");
             $this->isAuthenticated = true;

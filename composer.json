@@ -23,17 +23,6 @@
     "config": {
         "sort-packages": true
     },
-    "scripts": {
-        "all": [
-            "@lint",
-            "@phpstan",
-            "@coverage"
-        ],
-        "coverage": "phpunit --coverage-html=vendor/coverage",
-        "lint": "parallel-lint --colors src tests",
-        "phpstan": "phpstan analyze",
-        "test": "phpunit"
-    },
     "require": {
         "react/socket": "^1.12.0"
     },
@@ -41,6 +30,20 @@
         "php-parallel-lint/php-parallel-lint": "^1.3",
         "phpstan/phpstan": "^1.9",
         "phpstan/phpstan-phpunit": "^1.3.3",
-        "phpunit/phpunit": "^9.0"
+        "phpunit/phpunit": "^9.0",
+        "vimeo/psalm": "^5.9"
+    },
+    "scripts": {
+        "all": [
+            "@lint",
+            "@phpstan",
+            "@psalm",
+            "@coverage"
+        ],
+        "coverage": "phpunit --coverage-html=vendor/coverage",
+        "lint": "parallel-lint --colors src tests",
+        "phpstan": "phpstan analyze",
+        "psalm": "psalm",
+        "test": "phpunit"
     }
 }
