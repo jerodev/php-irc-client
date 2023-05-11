@@ -27,7 +27,7 @@ class IrcClientResponseTest extends TestCase
             ->withConsecutive(
                 ['JOIN #php-irc-client-test'],
                 ['USER PhpIrcBot * * :PhpIrcBot'],
-                ['NICK PhpIrcBot']
+                ['NICK PhpIrcBot'],
             );
 
         foreach ((new IrcMessageParser())->parse('KICK #php-irc-client-test PhpIrcBot') as $msg) {

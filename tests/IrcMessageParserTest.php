@@ -44,7 +44,22 @@ final class IrcMessageParserTest extends TestCase
         self::assertSame(2, $count);
     }
 
-    public function testMOTD(): void
+    public function testMotd(): void
     {
+        $message = ':*.freenode.net 372 test-irc-bot :  Hello, World!' . \PHP_EOL
+            . ':*.freenode.net 372 test-irc-bot :' . \PHP_EOL
+            . ':*.freenode.net 372 test-irc-bot :  Welcome to the' . \PHP_EOL
+            . ':*.freenode.net 372 test-irc-bot :          __                               _' . \PHP_EOL
+            . ':*.freenode.net 372 test-irc-bot :         / _|_ __ ___  ___ _ __   ___   __| | ___' . \PHP_EOL
+            . ':*.freenode.net 372 test-irc-bot :        | |_| \'__/ _ \\/ _ \\ \'_ \\ / _ \\ / _` |/ _ \\' . \PHP_EOL
+            . ':*.freenode.net 372 test-irc-bot :        |  _| | |  __/  __/ | | | (_) | (_| |  __/' . \PHP_EOL
+            . ':*.freenode.net 372 test-irc-bot :        |_| |_|  \\___|\\___|_| |_|\\___/ \\__,_|\\___|' . \PHP_EOL
+            . ':*.freenode.net 372 test-irc-bot :                                   AUTONOMOUS ZONE' . \PHP_EOL;
+        $count = 0;
+        foreach ($this->parser->parse($message) as $parsed) {
+            $count++;
+            self::assertInstanceOf(IrcMessage::class, $parsed);
+        }
+        self::assertSame(9, $count);
     }
 }

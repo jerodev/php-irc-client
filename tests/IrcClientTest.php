@@ -32,10 +32,8 @@ final class IrcClientTest extends TestCase
 
     public function testGetNicknameWithoutUser(): void
     {
-        $this->markTestSkipped('Attempts to read property on null');
-        // @phpstan-ignore-next-line
         $client = new IrcClient('chat.example.com:6667');
-        $client->getNickname();
+        self::assertNull($client->getNickname());
     }
 
     public function testGetNicknameFromOptions(): void
