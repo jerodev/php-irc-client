@@ -7,6 +7,9 @@ namespace Tests;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 use ReflectionClass;
 
+/**
+ * @psalm-suppress UnusedMethodCall
+ */
 class TestCase extends PHPUnitTestCase
 {
     protected function callPrivate($object, string $method, array $args)

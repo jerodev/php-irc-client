@@ -10,11 +10,12 @@ use Jerodev\PhpIrcClient\IrcClient;
 
 class IrcMessage
 {
+    /** @psalm-suppress PossiblyUnusedProperty */
     protected string $command;
-    protected string $commandsuffix;
+    protected ?string $commandsuffix = null;
     protected bool $handled = false;
     protected string $payload = '';
-    protected string $source;
+    protected ?string $source = null;
 
     public function __construct(string $command)
     {
@@ -61,8 +62,8 @@ class IrcMessage
         $command = trim($command);
         $i = 0;
 
-        if ($command[0] === ':') {
-            $i = strpos($command, ' ');
+        if ($command[0] === ':' && false !== strpos($command, ' ')) {
+            $i = (int)strpos($command, ' ');
             $this->source = substr($command, 1, $i - 1);
 
             $i++;

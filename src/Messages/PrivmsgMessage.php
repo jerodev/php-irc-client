@@ -9,7 +9,7 @@ use Jerodev\PhpIrcClient\IrcChannel;
 
 class PrivmsgMessage extends IrcMessage
 {
-    public IrcChannel $channel;
+    public ?IrcChannel $channel = null;
     public string $message;
     public string $target;
     public string $user;
@@ -17,8 +17,8 @@ class PrivmsgMessage extends IrcMessage
     public function __construct(string $message)
     {
         parent::__construct($message);
-        $this->user = strstr($this->source, '!', true);
-        $this->target = $this->commandsuffix;
+        $this->user = strstr($this->source ?? '', '!', true);
+        $this->target = (string)$this->commandsuffix;
         $this->message = $this->payload;
     }
 

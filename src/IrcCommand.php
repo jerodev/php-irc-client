@@ -6,8 +6,8 @@ namespace Jerodev\PhpIrcClient;
 
 final class IrcCommand
 {
-    const RPL_WELCOME = '001';
-    const RPL_TOPIC = '332';
-    const RPL_NAMREPLY = '353';
-    const RPL_MOTD = '372';
+    public const RPL_WELCOME = '001';
+    public const RPL_TOPIC = '332';
+    public const RPL_NAMREPLY = '353';
+    public const RPL_MOTD = '372';
 }
