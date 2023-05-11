@@ -10,20 +10,20 @@ jobs:
         php-version:
           - 8.2
     steps:
-      - name: "Checkout repository"
+      - name: Checkout repository
         uses: "actions/checkout@v3"
 
-      - name: "Install PHP w/ Extensions"
+      - name: Install PHP with extensions
         uses: shivammathur/setup-php@master
         with:
           php-version: ${{ matrix.php-version }}
           coverage: none
           extensions: "mbstring"
 
-      - name: "Install Composer dependencies"
+      - name: Install Composer dependencies
         run: composer install --no-progress --no-interaction
 
-      - name: "Check syntax (php-parallel-lint)"
+      - name: Check syntax (php-parallel-lint)
         run: vendor/bin/parallel-lint src tests
 
   PHPStan:
@@ -33,20 +33,20 @@ jobs:
         php-version:
           - 8.2
     steps:
-      - name: "Checkout"
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - name: "Install PHP w/ Extensions"
+      - name: Install PHP with extensions
         uses: shivammathur/setup-php@master
         with:
           php-version: ${{ matrix.php-version }}
           coverage: none
           extensions: "mbstring"
 
-      - name: "Install Composer dependencies & app config"
+      - name: Install Composer dependencies
         run: composer install --no-progress --no-interaction
 
-      - name: "Run PHPStan analysis"
+      - name: Run PHPStan analysis
         run: vendor/bin/phpstan analyze
 
   Psalm:
@@ -59,18 +59,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: "Install PHP w/ Extensions"
+      - name: Install PHP with extensions
         uses: shivammathur/setup-php@master
         with:
           php-version: ${{ matrix.php-version }}
           coverage: none
-          extensions: "json, mbstring, mongodb, pdo"
+          extensions: "mbstring"
 
-      - name: "Install Composer dependencies & app config"
-        run: |
-          cp .github/workflows/env.testing .env.testing
-          cp .github/workflows/env.testing .env
-          composer install --no-progress --no-interaction
+      - name: Install Composer dependencies
+        run: composer install --no-progress --no-interaction
 
       - name: Psalm
         run: vendor/bin/psalm
