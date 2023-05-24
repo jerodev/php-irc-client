@@ -7,6 +7,7 @@ namespace Jerodev\PhpIrcClient;
 /**
  * Map of somewhat human-readable reply names to numeric reply codes.
  * @see https://www.rfc-editor.org/rfc/rfc145
+ * @psalm-suppress UnusedClass
  */
 enum IrcReply: string
 {

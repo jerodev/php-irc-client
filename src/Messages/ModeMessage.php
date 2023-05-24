@@ -11,7 +11,12 @@ use Jerodev\PhpIrcClient\IrcClient;
 class ModeMessage extends IrcMessage
 {
     public ?IrcChannel $channel = null;
+
+    /**
+     * @psalm-suppress PossiblyUnusedProperty
+     */
     public string $message;
+
     public string $mode;
     public ?string $target = null;
     public string $user;
