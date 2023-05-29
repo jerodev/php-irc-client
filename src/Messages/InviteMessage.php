@@ -10,8 +10,19 @@ use Jerodev\PhpIrcClient\IrcClient;
 
 class InviteMessage extends IrcMessage
 {
+    /**
+     * Channel the client was invited to.
+     */
     public IrcChannel $channel;
+
+    /**
+     * Name of the channel client was was invited to.
+     */
     public string $target;
+
+    /**
+     * Name of the user inviting the client to.
+     */
     public string $user;
 
     public function __construct(string $command)
@@ -21,13 +32,11 @@ class InviteMessage extends IrcMessage
         [$this->user] = explode('!', $this->user);
         $this->user = substr($this->user, 1);
         $this->target = $this->payload;
+        $this->channel = new IrcChannel($this->target);
     }
 
     public function handle(IrcClient $client, bool $force = false): void
     {
-        if ($this->handled && !$force) {
-            return;
-        }
     }
 
     /**
