@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace Jerodev\PhpIrcClient\Messages;
 
 use Jerodev\PhpIrcClient\Helpers\Event;
+use Jerodev\PhpIrcClient\IrcChannel;
 use Jerodev\PhpIrcClient\IrcClient;
 
 class TopicChangeMessage extends IrcMessage
 {
-    public string $channel;
     public string $topic;
 
     public function __construct(string $message)
     {
         parent::__construct($message);
-        $this->channel = strstr($this->commandsuffix ?? '', '#');
+        $this->channel = new IrcChannel(strstr($this->commandsuffix ?? '', '#'));
         $this->topic = $this->payload;
     }
 
@@ -28,7 +28,7 @@ class TopicChangeMessage extends IrcMessage
             return;
         }
 
-        $client->getChannel($this->channel)->setTopic($this->topic);
+        $client->getChannel($this->channel->getName())->setTopic($this->topic);
     }
 
     /**

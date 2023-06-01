@@ -83,7 +83,7 @@ class IrcClient
         }
 
         $this->isAuthenticated = false;
-        $this->connection->onData(function ($msg) {
+        $this->connection->onData(function (IrcMessage $msg): void {
             $this->handleIrcMessage($msg);
         });
         $this->connection->open();
@@ -197,7 +197,7 @@ class IrcClient
     }
 
     /**
-     * Take actions required for received irc messages and invoke the correct
+     * Take actions required for received IRC messages and invoke the correct
      * event handlers.
      * @param IrcMessage $message The message object for the received line.
      */

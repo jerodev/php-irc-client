@@ -10,14 +10,16 @@ use Jerodev\PhpIrcClient\IrcClient;
 
 class KickMessage extends IrcMessage
 {
-    public ?IrcChannel $channel = null;
     public string $message;
-    private string $target;
+    public string $kicker;
     public string $user;
 
     public function __construct(string $message)
     {
         parent::__construct($message);
+        [$this->kicker] = explode(' ', $message);
+        [$this->kicker] = explode('!', $this->kicker);
+        $this->kicker = substr($this->kicker, 1);
 
         [$this->target, $this->user] = explode(' ', $this->commandsuffix ?? '');
         $this->message = $this->payload;
@@ -43,17 +45,10 @@ class KickMessage extends IrcMessage
     public function getEvents(): array
     {
         return [
-            new Event('kick', [$this->channel, $this->user, $this->message]),
+            new Event(
+                'kick',
+                [$this->channel, $this->user, $this->kicker, $this->message]
+            ),
         ];
-    }
-
-    /**
-     * @param array<string, IrcChannel> $channels
-     */
-    public function injectChannel(array $channels): void
-    {
-        if (array_key_exists($this->target, $channels)) {
-            $this->channel = $channels[$this->target];
-        }
     }
 }

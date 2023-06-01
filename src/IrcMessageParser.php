@@ -6,8 +6,10 @@ namespace Jerodev\PhpIrcClient;
 
 use Generator;
 use Jerodev\PhpIrcClient\Messages\IrcMessage;
+use Jerodev\PhpIrcClient\Messages\InviteMessage;
 use Jerodev\PhpIrcClient\Messages\KickMessage;
 use Jerodev\PhpIrcClient\Messages\MOTDMessage;
+use Jerodev\PhpIrcClient\Messages\ModeMessage;
 use Jerodev\PhpIrcClient\Messages\NameReplyMessage;
 use Jerodev\PhpIrcClient\Messages\PingMessage;
 use Jerodev\PhpIrcClient\Messages\PrivmsgMessage;
@@ -54,6 +56,10 @@ class IrcMessageParser
                 return new NameReplyMessage($message);
             case IrcCommand::RPL_MOTD:
                 return new MOTDMessage($message);
+            case 'MODE':
+                return new ModeMessage($message);
+            case 'INVITE':
+                return new InviteMessage($message);
             default:
                 return new IrcMessage($message);
         }

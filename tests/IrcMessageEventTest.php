@@ -17,7 +17,10 @@ class IrcMessageEventTest extends TestCase
     {
         $this->invokeClientEvents(
             ':Jerodev!~Jerodev@foo.bar.be KICK #channel user :Get out!',
-            [[new Event('kick', [new IrcChannel('#channel'), 'user', 'Get out!'])]]
+            [[new Event(
+                'kick',
+                [new IrcChannel('#channel'), 'user', 'Jerodev', 'Get out!']
+            )]]
         );
     }
 
@@ -34,7 +37,7 @@ class IrcMessageEventTest extends TestCase
         $this->invokeClientEvents(
             ':Jerodev!~Jerodev@foo.bar.be 353 IrcBot = #channel :IrcBot @Q OtherUser',
             [
-                [new Event('names', ['#channel', ['IrcBot', '@Q', 'OtherUser']])],
+                [new Event('names', [new IrcChannel('#channel'), ['IrcBot', '@Q', 'OtherUser']])],
                 [new Event('names#channel', [['IrcBot', '@Q', 'OtherUser']])],
             ]
         );
@@ -64,7 +67,7 @@ class IrcMessageEventTest extends TestCase
     {
         $this->invokeClientEvents(
             ':Jerodev!~Jerodev@foo.bar.be TOPIC #channel :My Topic',
-            [[new Event('topic', ['#channel', 'My Topic'])]]
+            [[new Event('topic', [new IrcChannel('#channel'), 'My Topic'])]]
         );
     }
 
