@@ -10,16 +10,16 @@ use Jerodev\PhpIrcClient\IrcClient;
 
 class IrcMessage
 {
-    /** @psalm-suppress PossiblyUnusedProperty */
-    protected string $command;
+    public ?IrcChannel $channel = null;
     protected ?string $commandsuffix = null;
     protected bool $handled = false;
     protected string $payload = '';
     protected ?string $source = null;
+    public ?string $target = null;
 
-    public function __construct(string $command)
+    public function __construct(protected string $command)
     {
-        $this->parse($command);
+        $this->parse($this->command);
     }
 
     /**
@@ -27,7 +27,7 @@ class IrcMessage
      * The handle will only be executed once unless forced.
      *
      * @param IrcClient $client A reference to the irc client object
-     * @param bool $force Force handling this message even if already handled.
+     * @param bool $force Force handling this message even if already handled
      */
     public function handle(IrcClient $client, bool $force = false): void
     {
@@ -52,12 +52,15 @@ class IrcMessage
      */
     public function injectChannel(array $channels): void
     {
+        if (array_key_exists($this->target, $channels)) {
+            $this->channel = $channels[$this->target];
+        }
     }
 
     /**
      * Parse the IRC command string to local properties.
      */
-    private function parse(string $command): void
+    protected function parse(string $command): void
     {
         $command = trim($command);
         $i = 0;

@@ -10,7 +10,6 @@ use Jerodev\PhpIrcClient\Messages\InviteMessage;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jerodev\PhpIrcClient\Messages\InviteMessage
  * @small
  */
 final class InviteMessageTest extends TestCase

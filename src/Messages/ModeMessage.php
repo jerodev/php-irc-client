@@ -10,13 +10,6 @@ use Jerodev\PhpIrcClient\IrcClient;
 
 class ModeMessage extends IrcMessage
 {
-    public ?IrcChannel $channel = null;
-
-    /**
-     * @psalm-suppress PossiblyUnusedProperty
-     */
-    public string $message;
-
     public string $mode;
     public ?string $target = null;
     public string $user;
@@ -27,17 +20,10 @@ class ModeMessage extends IrcMessage
         if ('#' === $this->commandsuffix[0]) {
             [$this->target, $this->mode] = explode(' ', $this->commandsuffix);
             $this->user = $this->payload;
+            $this->channel = new IrcChannel($this->target);
         } else {
             $this->user = $this->commandsuffix;
             $this->mode = $this->payload;
-        }
-        $this->message = $this->payload;
-    }
-
-    public function handle(IrcClient $client, bool $force = false): void
-    {
-        if ($this->handled && !$force) {
-            return;
         }
     }
 
@@ -49,15 +35,5 @@ class ModeMessage extends IrcMessage
         return [
             new Event('mode', [$this->channel, $this->user, $this->mode]),
         ];
-    }
-
-    /**
-     * @param array<string, IrcChannel> $channels
-     */
-    public function injectChannel(array $channels): void
-    {
-        if (array_key_exists($this->target, $channels)) {
-            $this->channel = $channels[$this->target];
-        }
     }
 }

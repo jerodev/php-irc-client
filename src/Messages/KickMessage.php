@@ -10,9 +10,7 @@ use Jerodev\PhpIrcClient\IrcClient;
 
 class KickMessage extends IrcMessage
 {
-    public ?IrcChannel $channel = null;
     public string $message;
-    private string $target;
     public string $kicker;
     public string $user;
 
@@ -52,15 +50,5 @@ class KickMessage extends IrcMessage
                 [$this->channel, $this->user, $this->kicker, $this->message]
             ),
         ];
-    }
-
-    /**
-     * @param array<string, IrcChannel> $channels
-     */
-    public function injectChannel(array $channels): void
-    {
-        if (array_key_exists($this->target, $channels)) {
-            $this->channel = $channels[$this->target];
-        }
     }
 }

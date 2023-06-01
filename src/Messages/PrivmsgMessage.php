@@ -9,9 +9,7 @@ use Jerodev\PhpIrcClient\IrcChannel;
 
 class PrivmsgMessage extends IrcMessage
 {
-    public ?IrcChannel $channel = null;
     public string $message;
-    public string $target;
     public string $user;
 
     public function __construct(string $message)
@@ -36,15 +34,5 @@ class PrivmsgMessage extends IrcMessage
         return [
             new Event('privmsg', [$this->user, $this->target, $this->message]),
         ];
-    }
-
-    /**
-     * @param array<string, IrcChannel> $channels
-     */
-    public function injectChannel(array $channels): void
-    {
-        if (array_key_exists($this->target, $channels)) {
-            $this->channel = $channels[$this->target];
-        }
     }
 }
